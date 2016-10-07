@@ -1,0 +1,59 @@
+.social-links-nav > li {
+    display: inline-block;
+}
+
+.social-links-nav > li + li {
+    margin-left: 20px;
+}
+
+.social-links-nav > li > a {
+    padding-right: 0;
+    padding-left: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff; /* IE8 proofing */
+    color: rgba(255,255,255,.75);
+}
+
+.social-links-nav > li > a:hover,
+.social-links-nav > li > a:focus,
+.social-links-nav > .active > a,
+.social-links-nav > .active > a:hover,
+.social-links-nav > .active > a:focus {
+    background: transparent;
+    color: #fff;
+}
+
+@media (min-width: 768px) {
+    .social-links-nav {
+        float: right;
+    }
+}
+
+.cursive{
+    font-family: 'Grand Hotel',cursive;
+}
+
+.cover-heading.cursive{
+    font-size: 82px;
+}
+
+.site-wrapper {
+    background-image: url('../images/default.jpg')
+}
+
+.cover-black{
+    background-color: rgba(0,0,0,.6);
+}
+.cover-blue{
+    background-color: rgba(5, 31, 60, 0.6);
+}
+.cover-green{
+    background-color: rgba(3, 28, 7, 0.6);
+}
+.cover-orange{
+    background-color: rgba(37, 28, 5, 0.6);
+}
+.cover-red{
+    background-color: rgba(35, 3, 2, 0.66);
+}
