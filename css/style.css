@@ -39,7 +39,9 @@
 }
 
 .site-wrapper {
-    background-image: url('../images/default.jpg')
+    background-image: url('../images/default.jpg');
+    background-position: center center;
+    background-size: cover;
 }
 
 .cover-black{
