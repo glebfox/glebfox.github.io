@@ -46,6 +46,12 @@
     font-size: 82px;
 }
 
+@media (max-width: 427px) {
+    .cover-heading.cursive{
+        font-size: 48px;
+    }
+}
+
 .site-wrapper {
     background-image: url('../images/space.jpg');
     background-position: center center;
