@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'Playlist-Script';
+    src: url('../fonts/Playlist-Script.ttf.woff') format('woff'),
+    url('../fonts/Playlist-Script.ttf.svg#Playlist-Script') format('svg'),
+    url('../fonts/Playlist-Script.ttf.eot'),
+    url('../fonts/Playlist-Script.ttf.eot?#iefix') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body, html {
+    background-color: var(--dark);
+}
+
+.cover-heading {
+    font-family: 'Playlist-Script';
+    font-size: 180px;
+    color: var(--light);
+    line-height: 1.1;
+}
