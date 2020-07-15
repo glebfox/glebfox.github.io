@@ -1,20 +1,87 @@
 @font-face {
-    font-family: 'Playlist-Script';
-    src: url('../fonts/Playlist-Script.ttf.woff') format('woff'),
-    url('../fonts/Playlist-Script.ttf.svg#Playlist-Script') format('svg'),
-    url('../fonts/Playlist-Script.ttf.eot'),
-    url('../fonts/Playlist-Script.ttf.eot?#iefix') format('embedded-opentype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'Playlist-Script';
+  src: url('../fonts/Playlist-Script.ttf.woff') format('woff'),
+  url('../fonts/Playlist-Script.ttf.svg#Playlist-Script') format('svg'),
+  url('../fonts/Playlist-Script.ttf.eot'),
+  url('../fonts/Playlist-Script.ttf.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --background-color: var(--dark);
+  --text-color: var(--light);
 }
 
 body, html {
-    background-color: var(--dark);
+  height: 100%;
+
+  background-color: var(--background-color);
+  color: var(--text-color);
+
+  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
 }
 
 .cover-heading {
-    font-family: 'Playlist-Script';
-    font-size: 180px;
-    color: var(--light);
-    line-height: 1.1;
+  font-family: 'Playlist-Script';
+  font-size: 4rem;
+  line-height: 1.5;
+}
+
+.lead {
+  font-size: 1rem;
+}
+
+.copyright {
+  color: rgba(var(--text-color), .5);
+  font-size: 0.65rem;
+}
+
+a,
+a:focus,
+a:hover {
+  color: var(--text-color);
+}
+
+@media (min-width: 576px) {
+  .brand {
+    float: left;
+  }
+
+  .nav.social-links-nav {
+    float: right;
+  }
+
+  .cover-heading {
+    font-size: 7rem;
+  }
+
+  .lead {
+    font-size: 1.25rem;
+  }
+
+  .copyright {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cover-heading {
+    font-size: 8.5rem;
+  }
+
+  .lead {
+    font-size: 1.4rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .cover-heading {
+    font-size: 10rem;
+  }
+
+  .lead {
+    font-size: 1.5rem;
+  }
 }
