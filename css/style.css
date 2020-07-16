@@ -22,8 +22,16 @@ body, html {
 body {
   background-color: var(--background-color);
   color: var(--text-color);
+  background-image: url("../images/space.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 
   text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+}
+
+.cover-container {
+  background-color: rgba(0, 0, 0, .4);
 }
 
 .cover-heading {
