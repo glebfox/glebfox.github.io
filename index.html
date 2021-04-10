@@ -33,10 +33,14 @@
     <link href="css/fontawesome/brands.min.css" rel="stylesheet">
     <link href="css/fontawesome/solid.min.css" rel="stylesheet">
     <link href="css/style.min.css" rel="stylesheet">
+
+    <script src="js/jparticles.base.js"></script>
+    <script src="js/particle.js"></script>
 </head>
 
 <body class="d-flex text-center user-select-none">
 
+<div id="particle-container" class="w-100 h-100"></div>
 <div class="cover-container d-flex w-100 h-100 p-4 mx-auto flex-column">
     <header class="mb-auto">
         <div class="inner">
@@ -72,5 +76,18 @@
         </div>
     </footer>
 </div>
+
+<script>
+    new JParticles.Particle('#particle-container', {
+        proximity: 90,
+        range: 100,
+        color: ['white'],
+        num: 0.1,
+        minSpeed: 0.01,
+        maxSpeed: 0.05,
+        minR: 0.2,
+        maxR: 1.2,
+    });
+</script>
 </body>
 </html>
