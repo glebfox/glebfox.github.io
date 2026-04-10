@@ -17,10 +17,11 @@ Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A 
 Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Files:**
-- `index.html` — the entire page; includes inline JS for the theme toggle
-- `css/style.css` — all styles; no minified copy (load directly)
+- `index.html` — the entire page; all CSS is inline in `<style>`, all JS is inline in `<script>`
 - `fonts/Playlist-Script.*` — custom script font used for the `<h1>`
 - `images/favicon/` — full favicon set
+
+**Why inline CSS:** no separate CSS file means no cache-busting problem on redeploy — styles are always fresh with the HTML.
 
 **Theming:** Light/dark toggle via `data-theme` attribute on `<html>`. CSS variables in `:root` (dark default) and `[data-theme="light"]` use `oklch()`. Preference is persisted in `localStorage`; initial value falls back to `prefers-color-scheme`.
 
