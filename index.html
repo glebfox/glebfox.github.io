@@ -6,8 +6,16 @@
   <meta name="description" content="Gleb Gorelov's personal page">
   <meta name="author" content="Gleb Gorelov">
 
+  <!-- Declare supported color schemes early so the browser themes the canvas before CSS parses. -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e9ebef">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#010309">
+
   <link rel="icon" href="images/favicon/favicon-light.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
   <link rel="icon" href="images/favicon/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+
+  <!-- Preload the display font used by the LCP heading so it arrives sooner (fonts fetch in CORS mode). -->
+  <link rel="preload" href="fonts/Playlist-Script.ttf.woff" as="font" type="font/woff" crossorigin>
 
   <title>Gleb Gorelov</title>
 
@@ -57,8 +65,8 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
       color: var(--text);
-      transition: background 0.3s, color 0.3s;
-      user-select: none;
+      /* Only `color` is animatable here — a gradient `background` can't transition, so it would no-op. */
+      transition: color 0.3s;
     }
 
     /* ── Aurora orbs ──────────────────────────────────── */
@@ -69,6 +77,7 @@
       z-index: -1;
       overflow: hidden;
       pointer-events: none;
+      user-select: none;
     }
 
     .orb {
@@ -229,10 +238,14 @@
 
     h1 {
       font-family: 'Playlist-Script', cursive;
-      font-size: clamp(4rem, 14vw, 10rem);
+      /* Scale the fallback (cursive) to the web font's x-height so the swap doesn't shift layout. */
+      font-size-adjust: from-font;
+      /* The rem term keeps the heading responsive to the user's font-size/zoom, not viewport width alone. */
+      font-size: clamp(4rem, 2rem + 9vw, 10rem);
       font-weight: normal;
       line-height: 1.1;
       padding-bottom: 0.2em;
+      text-wrap: balance;
     }
 
     .tagline {
@@ -240,6 +253,7 @@
       color: var(--muted);
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      text-wrap: balance;
     }
 
     /* ── Footer ───────────────────────────────────────── */
@@ -306,20 +320,28 @@
   </main>
 
   <footer>
-    <p>Copyright &copy; 2016&ndash;<script>document.write(new Date().getFullYear())</script> Gleb Gorelov. All rights reserved.</p>
+    <p>Copyright &copy; 2016&ndash;<span id="year">2026</span> Gleb Gorelov. All rights reserved.</p>
   </footer>
 
   <script>
+    // Footer year (kept current automatically; the markup carries a sane fallback for no-JS).
+    document.getElementById('year').textContent = new Date().getFullYear();
+
     var root = document.documentElement;
     document.getElementById('theme-toggle').addEventListener('click', function () {
+      var systemScheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       // Fall back to the OS preference when no explicit override is set yet.
       var current = root.style.colorScheme;
-      if (current !== 'light' && current !== 'dark') {
-        current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
+      if (current !== 'light' && current !== 'dark') current = systemScheme;
       var next = current === 'dark' ? 'light' : 'dark';
-      root.style.colorScheme = next;
-      localStorage.setItem('theme', next);
+      if (next === systemScheme) {
+        // Toggling back to the system scheme: drop the override so the page follows the OS again.
+        root.style.colorScheme = '';
+        localStorage.removeItem('theme');
+      } else {
+        root.style.colorScheme = next;
+        localStorage.setItem('theme', next);
+      }
     });
   </script>
 
