@@ -23,6 +23,6 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Why inline CSS:** no separate CSS file means no cache-busting problem on redeploy — styles are always fresh with the HTML.
 
-**Theming:** Light/dark toggle via `data-theme` attribute on `<html>`. CSS variables in `:root` (dark default) and `[data-theme="light"]` use `oklch()`. Preference is persisted in `localStorage`; initial value falls back to `prefers-color-scheme`.
+**Theming:** Light/dark via the CSS `color-scheme` property and `light-dark()`. A single set of variables in `:root` is resolved with `light-dark(light, dark)`; the default `color-scheme: light dark` follows the OS. The toggle writes an explicit `color-scheme: light`/`dark` inline on `<html>`, persisted in `localStorage` and reapplied before paint to avoid a flash. The toggle icon (sun/moon) is also driven purely by `color-scheme` — two pseudo-elements whose visibility is switched with `light-dark()`.
 
-**Colors:** All color values use `oklch()` — keep this consistent when adding new colors.
+**Colors:** All color values use `oklch()`, wrapped in `light-dark()` for anything themed — keep both consistent when adding new colors.
