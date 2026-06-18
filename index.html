@@ -9,6 +9,30 @@
   <!-- Canonical URL: the page is reachable at both the apex domain and the github.io host; point crawlers at one. -->
   <link rel="canonical" href="https://glebfox.com/">
 
+  <!--
+    Social link previews. og:image / twitter:image must be ABSOLUTE URLs — scrapers
+    (Slack, Telegram, Facebook, X) fetch them server-side, so a relative path won't resolve.
+    The card is a single static PNG (images/og-image.png), intentionally dark and non-adaptive:
+    a scraper has no color-scheme to honor, so it can't mirror the page's light/dark toggle.
+  -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="glebfox.com">
+  <meta property="og:url" content="https://glebfox.com/">
+  <meta property="og:title" content="Gleb Gorelov">
+  <meta property="og:description" content="Gleb Gorelov's personal page">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://glebfox.com/images/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gleb Gorelov — glebfox.com">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gleb Gorelov">
+  <meta name="twitter:description" content="Gleb Gorelov's personal page">
+  <meta name="twitter:image" content="https://glebfox.com/images/og-image.png">
+  <meta name="twitter:image:alt" content="Gleb Gorelov — glebfox.com">
+
   <!-- Declare supported color schemes early so the browser themes the canvas before CSS parses. -->
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e9ebef">
