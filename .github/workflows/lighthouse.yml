@@ -1,0 +1,42 @@
+name: Lighthouse CI
+
+# Audit index.html on every push to master and on PRs targeting it.
+# The page is static and dependency-free, so scores should be near-perfect;
+# any drop is a clear regression signal.
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# One audit per ref at a time; cancel superseded runs.
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Audit page
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      # Serves the repo root as a static site and audits the discovered HTML.
+      # Budgets live in lighthouserc.json: accessibility / SEO / best-practices
+      # are hard-gated at 1.0; performance is warn-only (timing on shared CI
+      # runners fluctuates and would otherwise cause false failures).
+      #
+      # lighthouserc.json also forces prefers-reduced-motion via chromeFlags:
+      # the page's entrance animation starts content at opacity:0, which never
+      # advances in headless Lighthouse and yields NO_FCP. Reduced motion makes
+      # content statically visible, so the audit is deterministic. Keep this in
+      # mind if the entrance animation in index.html changes.
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
