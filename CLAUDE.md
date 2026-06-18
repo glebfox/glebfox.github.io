@@ -18,6 +18,14 @@ Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A 
 
 **Deployment:** Push to the `master` branch — GitHub Pages serves it automatically at glebfox.com (configured via `CNAME`).
 
+## Continuous integration
+
+**Lighthouse CI:** `.github/workflows/lighthouse.yml` audits `index.html` on every push to `master` and on PRs, serving the repo root as a static site via `treosh/lighthouse-ci-action`. Budgets live in `lighthouserc.json`: accessibility / SEO / best-practices are hard-gated at 1.0; performance is warn-only (timing on shared CI runners fluctuates). Public repo → Actions minutes are free.
+
+**Audit forces reduced motion (gotcha):** `lighthouserc.json` sets `chromeFlags: "--force-prefers-reduced-motion"`. The entrance animation (`@keyframes enter`) starts `header`/`main`/`footer` at `opacity: 0`, which never advances in headless Lighthouse → `NO_FCP` → the whole audit fails. Reduced motion makes content statically visible (the gated categories are motion-independent). Revisit this flag if that animation changes.
+
+**Run the audit locally:** `npx -y @lhci/cli@latest collect --config=./lighthouserc.json && npx -y @lhci/cli@latest assert --config=./lighthouserc.json` — needs Chrome; the config's `chromeFlags` handle headless + reduced motion, so it mirrors CI. `.lighthouseci/` is gitignored.
+
 ## Architecture
 
 Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
