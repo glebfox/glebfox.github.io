@@ -12,6 +12,10 @@ Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A 
 
 **Local preview:** a tracked `.claude/launch.json` provides a `site` server (`npx serve`, port 3000) for in-browser verification.
 
+**Force a theme when verifying:** set `localStorage.theme` to `light`/`dark` (or set `document.documentElement.style.colorScheme` inline on `<html>`) and reload; clear it to follow the OS again.
+
+**`modern-web-guidance` scope:** the mandatory search covers evolving CSS/JS APIs (this page's `light-dark()`/`oklch()`/animations) — it has no guides for static `<head>`/SEO/meta tags (canonical, Open Graph, `theme-color`, `description`), so expect empty results there and rely on standard knowledge.
+
 **Deployment:** Push to the `master` branch — GitHub Pages serves it automatically at glebfox.com (configured via `CNAME`).
 
 ## Architecture
@@ -30,4 +34,8 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Colors:** All color values use `oklch()`, wrapped in `light-dark()` for anything themed — keep both consistent when adding new colors. The two `<meta name="theme-color">` tags are the lone exception: they use hex (set per scheme via `media`, since `theme-color` accepts neither `oklch()` nor `light-dark()`) and must be hand-synced with `--bg-from` when the background changes.
 
+**Contrast (WCAG):** no built-in check resolves `oklch()` contrast — compute ratios by converting `oklch()` → sRGB → relative luminance. For light-theme text over the background gradient the worst case is the *darker* stop `--bg-to` (closest in lightness to the text), not `--bg-from`.
+
 **Social preview card:** `images/og-image.png` is a static, hand-generated render (dark aurora + the name in the script font), referenced by the Open Graph / Twitter tags in `<head>`. It is intentionally non-adaptive — a link scraper has no color-scheme to honor — and its `og:image`/`twitter:image` URLs are absolute, since scrapers fetch them server-side. No build step produces it; if the background palette or the wordmark changes, regenerate the PNG so the card stays in sync with the page.
+
+**Regenerating `og-image.png`:** mirror the page's dark values + orbs/gradient/script font into a throwaway 1200×630 HTML mock, render it in a headless browser (served over HTTP, not `file://`, so the `@font-face` woff loads), wait for `document.fonts.ready`, then screenshot to PNG — commit only the PNG and discard the mock and any render artifacts.
