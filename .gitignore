@@ -2,3 +2,4 @@
 .claude/worktrees/*
 *.iml
 .DS_Store
+.lighthouseci/
