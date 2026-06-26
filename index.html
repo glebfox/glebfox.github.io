@@ -424,8 +424,9 @@
       font-size: 0.75rem;
       color: var(--muted);
       text-align: center;
-      /* Symmetric gutter, same value as the page padding — keeps the copyright off the stack above and the viewport edge below. */
-      padding-block: var(--pad);
+      /* Only top padding — separates the copyright from the stack above. The body's own
+         bottom padding handles the gap to the viewport edge, so don't double it here. */
+      padding-top: var(--pad);
     }
 
     footer a {
