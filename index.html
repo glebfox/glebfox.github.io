@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Gleb Gorelov's personal page">
+  <meta name="description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
   <meta name="author" content="Gleb Gorelov">
 
   <!-- Canonical URL: the page is reachable at both the apex domain and the github.io host; point crawlers at one. -->
@@ -19,7 +19,7 @@
   <meta property="og:site_name" content="glebfox.com">
   <meta property="og:url" content="https://glebfox.com/">
   <meta property="og:title" content="Gleb Gorelov">
-  <meta property="og:description" content="Gleb Gorelov's personal page">
+  <meta property="og:description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
   <meta property="og:locale" content="en_US">
   <meta property="og:image" content="https://glebfox.com/images/og-image.png">
   <meta property="og:image:type" content="image/png">
@@ -29,7 +29,7 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Gleb Gorelov">
-  <meta name="twitter:description" content="Gleb Gorelov's personal page">
+  <meta name="twitter:description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
   <meta name="twitter:image" content="https://glebfox.com/images/og-image.png">
   <meta name="twitter:image:alt" content="Gleb Gorelov — glebfox.com">
 
@@ -41,16 +41,16 @@
   <link rel="icon" href="images/favicon/favicon-light.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
   <link rel="icon" href="images/favicon/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 
-  <!-- Preload the display font used by the LCP heading so it arrives sooner (fonts fetch in CORS mode). -->
-  <link rel="preload" href="fonts/Playlist-Script.ttf.woff" as="font" type="font/woff" crossorigin>
+  <!-- Preload Satoshi (the page's only web font; used by the name/LCP heading and all body text). Fonts fetch in CORS mode. -->
+  <link rel="preload" href="fonts/Satoshi-Variable.woff2" as="font" type="font/woff2" crossorigin>
 
   <title>Gleb Gorelov</title>
 
   <style>
     @font-face {
-      font-family: 'Playlist-Script';
-      src: url('fonts/Playlist-Script.ttf.woff') format('woff');
-      font-weight: normal;
+      font-family: 'Satoshi';
+      src: url('fonts/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 300 900;
       font-style: normal;
       font-display: swap;
     }
@@ -63,15 +63,23 @@
     :root {
       color-scheme: light dark;
 
+      /* Page gutter — shared by the body and the footer so they stay in sync. */
+      --pad: 1.5rem;
+
       --bg-from:   light-dark(oklch(94% 0.005 260), oklch(10% 0.02 260));
       --bg-to:     light-dark(oklch(86% 0.012 260), oklch(16% 0.04 260));
       --text:      light-dark(oklch(18% 0.01 260),  oklch(95% 0.01 260));
-      --muted:     light-dark(oklch(46% 0.01 260),  oklch(62% 0.01 260));
+      --muted:     light-dark(oklch(44% 0.01 260),  oklch(62% 0.01 260));
       --btn-bg:    light-dark(oklch(0% 0 0 / 0.07), oklch(100% 0 0 / 0.10));
       --btn-hover: light-dark(oklch(0% 0 0 / 0.13), oklch(100% 0 0 / 0.18));
       --orb-1:     light-dark(oklch(75% 0.14 350),  oklch(42% 0.22 290));
       --orb-2:     light-dark(oklch(78% 0.12 220),  oklch(52% 0.18 195));
       --orb-3:     light-dark(oklch(76% 0.12 290),  oklch(38% 0.20 250));
+
+      /* Single accent: links, primary button, section underline, "What I do" icons.
+         Darker in light theme so it clears WCAG AA — incl. as text on the .btn-primary
+         12%-accent tinted background (worst case ~4.6:1), not just the bare gradient. */
+      --accent:    light-dark(oklch(44% 0.18 290),  oklch(76% 0.13 290));
     }
 
     *, *::before, *::after {
@@ -80,19 +88,19 @@
       padding: 0;
     }
 
-    html, body {
-      height: 100%;
-    }
-
     body {
       display: grid;
       grid-template-rows: auto 1fr auto;
-      min-height: 100%;
-      padding: 1.5rem;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      /* min-height (not height:100%) so the box grows with content — the gradient then
+         covers the full page height and never clips on scroll. */
+      min-height: 100vh;
+      padding: var(--pad);
+      font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      /* Normalize the fallback's x-height to Satoshi's while it swaps in, so the
+         font-display: swap exchange doesn't reflow text (CLS) — esp. the LCP .name. */
+      font-size-adjust: from-font;
       background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
       color: var(--text);
-      /* Only `color` is animatable here — a gradient `background` can't transition, so it would no-op. */
       transition: color 0.3s;
     }
 
@@ -184,41 +192,21 @@
     header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand {
-      font-size: 1.4rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
+      justify-content: flex-end;
     }
 
     /* ── Theme toggle ─────────────────────────────────── */
 
+    /* The toggle is a .btn.btn-secondary; only the round shape and icon are bespoke
+       (border / fill / hover / focus ring all come from the shared button styles). */
     #theme-toggle {
       position: relative;
       width: 2.5rem;
       height: 2.5rem;
-      border: none;
+      padding: 0;
       border-radius: 50%;
-      background: var(--btn-bg);
-      color: var(--text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      transition: background 0.2s;
-      backdrop-filter: blur(4px);
-      outline: none;
-    }
-
-    #theme-toggle:hover {
-      background: var(--btn-hover);
-    }
-
-    #theme-toggle:focus-visible {
-      outline: 2px solid var(--muted);
-      outline-offset: 2px;
+      cursor: pointer;
     }
 
     /*
@@ -254,34 +242,192 @@
 
     /* ── Main content ─────────────────────────────────── */
 
+    /* The whole block is centered on the page (max-width + auto margins);
+       text inside stays left-aligned for readability, stack + footer center. */
     main {
+      max-width: 52rem;
+      width: 100%;
+      margin-inline: auto;
+      align-self: center;
+    }
+
+    /* Hero ── photo left, identity right */
+    .hero {
       display: flex;
-      flex-direction: column;
+      gap: 2.75rem;
+      align-items: center;
+    }
+
+    /* The <picture> is just a format-selection wrapper — let the <img> stay the flex child
+       so .photo's flex:none / sizing apply directly. */
+    .hero picture { display: contents; }
+
+    .photo {
+      flex: none;
+      width: 14rem;
+      height: 14rem;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid light-dark(oklch(0% 0 0 / 0.12), oklch(100% 0 0 / 0.18));
+      box-shadow: 0 0 0 10px light-dark(oklch(0% 0 0 / 0.04), oklch(100% 0 0 / 0.04)),
+                  0 24px 60px oklch(0% 0 0 / 0.30);
+    }
+
+    .eyebrow {
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .name {
+      /* ss01 swaps Satoshi's spur'd G for the clean alternate; the name has no 'a' to affect. */
+      font-feature-settings: "ss01" 1;
+      font-weight: 700;
+      font-size: clamp(2.5rem, 1.6rem + 4vw, 3.4rem);
+      letter-spacing: -0.015em;
+      line-height: 1.02;
+      margin-bottom: 1rem;
+      text-wrap: balance;
+    }
+
+    .intro {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text);
+      opacity: 0.92;
+      max-width: 46ch;
+      margin-bottom: 1.5rem;
+      /* pretty avoids orphaned last words in body copy (balance is for the heading). */
+      text-wrap: pretty;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.875rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0.7rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-primary {
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      background: color-mix(in oklab, var(--accent) 12%, transparent);
+    }
+
+    .btn-primary:hover { background: color-mix(in oklab, var(--accent) 22%, transparent); }
+
+    .btn-secondary {
+      border: 1px solid var(--btn-bg);
+      color: var(--text);
+      background: var(--btn-bg);
+    }
+
+    .btn-secondary:hover { background: var(--btn-hover); }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* What I do ── titled blocks instead of a wall of prose */
+    .do { margin-top: 3.25rem; }
+
+    .section-h { font-weight: 700; font-size: 1.3rem; }
+
+    .section-u {
+      width: 3rem;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--accent);
+      margin: 0.4rem 0 1.75rem;
+    }
+
+    .do-grid {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.9rem 2.75rem;
+    }
+
+    .do-item { display: flex; gap: 1rem; }
+
+    .do-ic {
+      flex: none;
+      width: 1.9rem;
+      height: 1.9rem;
+      color: var(--accent);
+    }
+
+    .do-ic svg { width: 100%; height: 100%; display: block; }
+
+    .do-item h3 { font-weight: 700; font-size: 0.97rem; margin-bottom: 0.45rem; }
+
+    .do-item p {
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: var(--text);
+      opacity: 0.8;
+      text-wrap: pretty;
+    }
+
+    /* Stack ── centered row of tech chips */
+    .stack { margin-top: 2.75rem; text-align: center; }
+
+    .stack-label {
+      font-weight: 500;
+      font-size: 0.625rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .chips {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 500;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.75rem 0.25rem 0.3rem;
+      border-radius: 0.55rem;
+      border: 1px solid var(--btn-bg);
+      background: var(--btn-bg);
+    }
+
+    /* White tile keeps every brand logo legible in both themes. */
+    .tile {
+      flex: none;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 0.3rem;
+      background: #fff;
+      border: 1px solid oklch(0% 0 0 / 0.06);
+      box-shadow: 0 1px 3px oklch(0% 0 0 / 0.20);
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 1.5rem;
-      text-align: center;
     }
 
-    h1 {
-      font-family: 'Playlist-Script', cursive;
-      /* Scale the fallback (cursive) to the web font's x-height so the swap doesn't shift layout. */
-      font-size-adjust: from-font;
-      /* The rem term keeps the heading responsive to the user's font-size/zoom, not viewport width alone. */
-      font-size: clamp(4rem, 2rem + 9vw, 10rem);
-      font-weight: normal;
-      line-height: 1.1;
-      padding-bottom: 0.2em;
-      text-wrap: balance;
-    }
-
-    .tagline {
-      font-size: clamp(0.875rem, 2vw, 1.125rem);
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-wrap: balance;
-    }
+    .tile svg { width: 0.85rem; height: 0.85rem; display: block; }
 
     /* ── Footer ───────────────────────────────────────── */
 
@@ -289,6 +435,9 @@
       font-size: 0.75rem;
       color: var(--muted);
       text-align: center;
+      /* Only top padding — separates the copyright from the stack above. The body's own
+         bottom padding handles the gap to the viewport edge, so don't double it here. */
+      padding-top: var(--pad);
     }
 
     footer a {
@@ -298,6 +447,16 @@
 
     footer a:hover {
       text-decoration: underline;
+    }
+
+    /* ── Responsive ───────────────────────────────────── */
+
+    @media (max-width: 40rem) {
+      .hero { flex-direction: column; align-items: center; text-align: center; gap: 1.75rem; }
+      .photo { width: 11rem; height: 11rem; }
+      .intro { max-width: none; }
+      .actions { justify-content: center; }
+      .do-grid { grid-template-columns: 1fr; }
     }
 
     /* ── Reduced motion ───────────────────────────────── */
@@ -337,13 +496,64 @@
   </div>
 
   <header>
-    <span class="brand">Gleb Gorelov</span>
-    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme"></button>
+    <button id="theme-toggle" class="btn btn-secondary" aria-label="Toggle theme" title="Toggle theme"></button>
   </header>
 
   <main>
-    <h1>Coming soon</h1>
-    <p class="tagline">This site is under construction</p>
+    <section class="hero">
+      <!-- LCP element: modern formats first (AVIF ~27K, WebP ~29K), JPEG fallback ~75K.
+           fetchpriority="high" + decoding="sync" so the browser prioritizes and doesn't defer its decode. -->
+      <picture>
+        <source srcset="images/photo.avif" type="image/avif">
+        <source srcset="images/photo.webp" type="image/webp">
+        <img class="photo" src="images/photo.jpg" width="448" height="448" alt="Gleb Gorelov" fetchpriority="high" decoding="sync">
+      </picture>
+      <div class="hero-text">
+        <p class="eyebrow">Tech &amp; team lead · UI · Jmix Framework</p>
+        <h1 class="name">Gleb Gorelov</h1>
+        <p class="intro">Since 2014 I've worked on the UI of Jmix — the open-source framework teams around the world use to build their applications. These days I lead the UI team about as much as I build it.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://github.com/glebfox" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn btn-secondary" href="mailto:glebfox@gmail.com">Email</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="do" aria-labelledby="do-h">
+      <h2 id="do-h" class="section-h">What I do</h2>
+      <div class="section-u" aria-hidden="true"></div>
+      <ul class="do-grid">
+        <li class="do-item">
+          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+          <div><h3>Building the UI</h3><p>The UI layer of Jmix — and CUBA Platform before it: components and behavior on Vaadin and Web Components, over Java and Spring Boot.</p></div>
+        </li>
+        <li class="do-item">
+          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3"/><path d="M3 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9.5" r="2.3"/><path d="M15.5 20a4.6 4.6 0 0 1 6-4.3"/></svg></span>
+          <div><h3>Leading the team</h3><p>As tech &amp; team lead I'm in other people's code as much as my own — reviewing, mentoring, leaving a quiet fingerprint on what the team ships.</p></div>
+        </li>
+        <li class="do-item">
+          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 2.5 9 12 14l9.5-5L12 4z"/><path d="M6.5 11.2V16c0 1.4 2.6 2.8 5.5 2.8s5.5-1.4 5.5-2.8v-4.8"/></svg></span>
+          <div><h3>Teaching the craft</h3><p>Training materials, trainings, and online workshops for developers picking Jmix up. I like passing it on.</p></div>
+        </li>
+        <li class="do-item">
+          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="M7 9.5 10 12l-3 2.5"/><path d="M12.5 15H17"/></svg></span>
+          <div><h3>Agentic coding</h3><p>Lately the engineering of it — not vibe-coding, but a proper harness of process and guardrails. Partly to see how much I can hand off before it quietly applies for my job.</p></div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="stack" aria-labelledby="stack-h">
+      <p class="stack-label" id="stack-h">Tech I work with</p>
+      <ul class="chips">
+        <li class="chip"><span class="tile"><svg viewBox="0 0 24 24" fill="#000000" aria-hidden="true"><path d="M11.915 0 11.7.215C9.515 2.4 7.47 6.39 6.046 10.483c-1.064 1.024-3.633 2.81-3.711 3.551-.093.87 1.746 2.611 1.55 3.235-.198.625-1.304 1.408-1.014 1.939.1.188.823.011 1.277-.491a13.389 13.389 0 0 0-.017 2.14c.076.906.27 1.668.643 2.232.372.563.956.911 1.667.911.397 0 .727-.114 1.024-.264.298-.149.571-.33.91-.5.68-.34 1.634-.666 3.53-.604 1.903.062 2.872.39 3.559.704.687.314 1.15.664 1.925.664.767 0 1.395-.336 1.807-.9.412-.563.631-1.33.72-2.24.06-.623.055-1.32 0-2.066.454.45 1.117.604 1.213.424.29-.53-.816-1.314-1.013-1.937-.198-.624 1.642-2.366 1.549-3.236-.08-.748-2.707-2.568-3.748-3.586C16.428 6.374 14.308 2.394 12.13.215zm.175 6.038a2.95 2.95 0 0 1 2.943 2.942 2.95 2.95 0 0 1-2.943 2.943A2.95 2.95 0 0 1 9.148 8.98a2.95 2.95 0 0 1 2.942-2.942zM8.685 7.983a3.515 3.515 0 0 0-.145.997c0 1.951 1.6 3.55 3.55 3.55 1.95 0 3.55-1.598 3.55-3.55 0-.329-.046-.648-.132-.951.334.095.64.208.915.336a42.699 42.699 0 0 1 2.042 5.829c.678 2.545 1.01 4.92.846 6.607-.082.844-.29 1.51-.606 1.94-.315.431-.713.651-1.315.651-.593 0-.932-.27-1.673-.61-.741-.338-1.825-.694-3.792-.758-1.974-.064-3.073.293-3.821.669-.375.188-.659.373-.911.5s-.466.2-.752.2c-.53 0-.876-.209-1.16-.64-.285-.43-.474-1.101-.545-1.948-.141-1.693.176-4.069.823-6.614a43.155 43.155 0 0 1 1.934-5.783c.348-.167.749-.31 1.192-.425zm-3.382 4.362a.216.216 0 0 1 .13.031c-.166.56-.323 1.116-.463 1.665a33.849 33.849 0 0 0-.547 2.555 3.9 3.9 0 0 0-.2-.39c-.58-1.012-.914-1.642-1.16-2.08.315-.24 1.679-1.755 2.24-1.781zm13.394.01c.562.027 1.926 1.543 2.24 1.783-.246.438-.58 1.068-1.16 2.08a4.428 4.428 0 0 0-.163.309 32.354 32.354 0 0 0-.562-2.49 40.579 40.579 0 0 0-.482-1.652.216.216 0 0 1 .127-.03z"/></svg></span>Java</li>
+        <li class="chip"><span class="tile"><svg viewBox="0 0 24 24" fill="#6DB33F" aria-hidden="true"><path d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z"/></svg></span>Spring Boot</li>
+        <li class="chip"><span class="tile"><svg viewBox="0 0 24 24" fill="#00B4F0" aria-hidden="true"><path d="M1.166.521C.506.521 0 1.055 0 1.715v1.97c0 2.316 1.054 3.473 3.502 3.473h5.43c1.623 0 1.783.685 1.783 1.35 0 .068.004.13.012.193a1.268 1.268 0 0 0 2.531-.004c.007-.062.012-.121.012-.19 0-.664.16-1.349 1.783-1.349h5.43C22.93 7.158 24 6.001 24 3.686V1.715c0-.66-.524-1.194-1.184-1.194-.66 0-1.189.534-1.189 1.194l-.004.685c0 .746-.476 1.27-1.594 1.27h-5.322c-2.422 0-2.608 1.796-2.687 2.748h-.055c-.08-.952-.266-2.748-2.688-2.748H3.955c-1.118 0-1.629-.544-1.629-1.29v-.665c0-.66-.5-1.194-1.16-1.194zm5.875 10.553a1.586 1.586 0 0 0-1.375 2.371c1.657 3.06 3.308 6.13 4.967 9.184a1.415 1.415 0 0 0 2.586.02l.033-.06 4.945-9.142a1.587 1.587 0 0 0-1.377-2.373c-.702 0-1.179.345-1.502 1.082l-3.386 6.313-3.383-6.305c-.326-.745-.805-1.09-1.508-1.09Z"/></svg></span>Vaadin</li>
+        <li class="chip"><span class="tile"><svg viewBox="0 0 24 24" fill="#29ABE2" aria-hidden="true"><path d="M11.731 2.225l-.01.016H5.618L0 11.979l5.618 9.736h12.8l.04.06 2.134-3.735.518-.893h-.008l.008-.014-.626-.75h.895l.006-.01.008.01L24 11.994l-2.607-4.39-.003.005-.011-.02h-.945l.63-.763-2.606-4.57-.006.01-.024-.04H11.73zM9.107 6.824h6.19l-.53.764h-.023l2.398 4.015h.875l-.277.328.357.435h-.956l-2.398 4.015h.027l.523.764H9.074l-2.99-5.168 3.022-5.155z"/></svg></span>Web Components</li>
+        <li class="chip"><span class="tile"><svg viewBox="0 0 24 24" fill="#E34F26" aria-hidden="true"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg></span>HTML</li>
+        <li class="chip"><span class="tile"><svg viewBox="0 0 24 24" fill="#663399" aria-hidden="true"><path d="M0 0v20.16A3.84 3.84 0 0 0 3.84 24h16.32A3.84 3.84 0 0 0 24 20.16V3.84A3.84 3.84 0 0 0 20.16 0Zm14.256 13.08c1.56 0 2.28 1.08 2.304 2.64h-1.608c.024-.288-.048-.6-.144-.84-.096-.192-.288-.264-.552-.264-.456 0-.696.264-.696.84-.024.576.288.888.768 1.08.72.288 1.608.744 1.92 1.296q.432.648.432 1.656c0 1.608-.912 2.592-2.496 2.592-1.656 0-2.4-1.032-2.424-2.688h1.68c0 .792.264 1.176.792 1.176.264 0 .456-.072.552-.24.192-.312.24-1.176-.048-1.512-.312-.408-.912-.6-1.32-.816q-.828-.396-1.224-.936c-.24-.36-.36-.888-.36-1.536 0-1.44.936-2.472 2.424-2.448m5.4 0c1.584 0 2.304 1.08 2.328 2.64h-1.608c0-.288-.048-.6-.168-.84-.096-.192-.264-.264-.528-.264-.48 0-.72.264-.72.84s.288.888.792 1.08c.696.288 1.608.744 1.92 1.296.264.432.408.984.408 1.656.024 1.608-.888 2.592-2.472 2.592-1.68 0-2.424-1.056-2.448-2.688h1.68c0 .744.264 1.176.792 1.176.264 0 .456-.072.552-.24.216-.312.264-1.176-.048-1.512-.288-.408-.888-.6-1.32-.816-.552-.264-.96-.576-1.2-.936s-.36-.888-.36-1.536c-.024-1.44.912-2.472 2.4-2.448m-11.031.018c.711-.006 1.419.198 1.839.63.432.432.672 1.128.648 1.992H9.336c.024-.456-.096-.792-.432-.96-.312-.144-.768-.048-.888.24-.12.264-.192.576-.168.864v3.504c0 .744.264 1.128.768 1.128a.65.65 0 0 0 .552-.264c.168-.24.192-.552.168-.84h1.776c.096 1.632-.984 2.712-2.568 2.688-1.536 0-2.496-.864-2.472-2.472v-4.032c0-.816.24-1.44.696-1.848.432-.408 1.146-.624 1.857-.63"/></svg></span>CSS</li>
+        <li class="chip"><span class="tile"><svg viewBox="0 0 24 24" fill="#2B2B2B" aria-hidden="true"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg></span>JavaScript</li>
+      </ul>
+    </section>
   </main>
 
   <footer>
