@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Gleb Gorelov's personal page">
+  <meta name="description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
   <meta name="author" content="Gleb Gorelov">
 
   <!-- Canonical URL: the page is reachable at both the apex domain and the github.io host; point crawlers at one. -->
@@ -19,7 +19,7 @@
   <meta property="og:site_name" content="glebfox.com">
   <meta property="og:url" content="https://glebfox.com/">
   <meta property="og:title" content="Gleb Gorelov">
-  <meta property="og:description" content="Gleb Gorelov's personal page">
+  <meta property="og:description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
   <meta property="og:locale" content="en_US">
   <meta property="og:image" content="https://glebfox.com/images/og-image.png">
   <meta property="og:image:type" content="image/png">
@@ -29,7 +29,7 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Gleb Gorelov">
-  <meta name="twitter:description" content="Gleb Gorelov's personal page">
+  <meta name="twitter:description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
   <meta name="twitter:image" content="https://glebfox.com/images/og-image.png">
   <meta name="twitter:image:alt" content="Gleb Gorelov — glebfox.com">
 
@@ -447,6 +447,16 @@
 
     footer a:hover {
       text-decoration: underline;
+    }
+
+    /* ── Responsive ───────────────────────────────────── */
+
+    @media (max-width: 40rem) {
+      .hero { flex-direction: column; align-items: center; text-align: center; gap: 1.75rem; }
+      .photo { width: 11rem; height: 11rem; }
+      .intro { max-width: none; }
+      .actions { justify-content: center; }
+      .do-grid { grid-template-columns: 1fr; }
     }
 
     /* ── Reduced motion ───────────────────────────────── */
