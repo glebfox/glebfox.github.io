@@ -258,6 +258,10 @@
       align-items: center;
     }
 
+    /* The <picture> is just a format-selection wrapper — let the <img> stay the flex child
+       so .photo's flex:none / sizing apply directly. */
+    .hero picture { display: contents; }
+
     .photo {
       flex: none;
       width: 14rem;
@@ -294,6 +298,8 @@
       opacity: 0.92;
       max-width: 46ch;
       margin-bottom: 1.5rem;
+      /* pretty avoids orphaned last words in body copy (balance is for the heading). */
+      text-wrap: pretty;
     }
 
     .actions {
@@ -372,6 +378,7 @@
       line-height: 1.65;
       color: var(--text);
       opacity: 0.8;
+      text-wrap: pretty;
     }
 
     /* Stack ── centered row of tech chips */
@@ -494,7 +501,13 @@
 
   <main>
     <section class="hero">
-      <img class="photo" src="images/photo.jpg" width="448" height="448" alt="Gleb Gorelov" fetchpriority="high">
+      <!-- LCP element: modern formats first (AVIF ~27K, WebP ~29K), JPEG fallback ~75K.
+           fetchpriority="high" + decoding="sync" so the browser prioritizes and doesn't defer its decode. -->
+      <picture>
+        <source srcset="images/photo.avif" type="image/avif">
+        <source srcset="images/photo.webp" type="image/webp">
+        <img class="photo" src="images/photo.jpg" width="448" height="448" alt="Gleb Gorelov" fetchpriority="high" decoding="sync">
+      </picture>
       <div class="hero-text">
         <p class="eyebrow">Tech &amp; team lead · UI · Jmix Framework</p>
         <h1 class="name">Gleb Gorelov</h1>
