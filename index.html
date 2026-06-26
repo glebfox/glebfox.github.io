@@ -63,6 +63,9 @@
     :root {
       color-scheme: light dark;
 
+      /* Page gutter — shared by the body and the footer so they stay in sync. */
+      --pad: 1.5rem;
+
       --bg-from:   light-dark(oklch(94% 0.005 260), oklch(10% 0.02 260));
       --bg-to:     light-dark(oklch(86% 0.012 260), oklch(16% 0.04 260));
       --text:      light-dark(oklch(18% 0.01 260),  oklch(95% 0.01 260));
@@ -84,17 +87,15 @@
       padding: 0;
     }
 
-    html, body {
-      height: 100%;
-    }
-
     body {
       display: grid;
       grid-template-rows: auto 1fr auto;
-      min-height: 100%;
-      padding: 1.5rem;
+      /* min-height (not height:100%) so the box grows with content — the gradient then
+         covers the full page height and never clips on scroll. */
+      min-height: 100vh;
+      padding: var(--pad);
       font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      /* The aurora (gradient + orbs) lives on the fixed .orbs layer, so it never clips on scroll. */
+      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
       color: var(--text);
       transition: color 0.3s;
     }
@@ -108,7 +109,6 @@
       overflow: hidden;
       pointer-events: none;
       user-select: none;
-      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
     }
 
     .orb {
@@ -424,8 +424,8 @@
       font-size: 0.75rem;
       color: var(--muted);
       text-align: center;
-      /* Reserve space so the copyright never crowds the stack above or the viewport edge below. */
-      padding-top: 3rem;
+      /* Symmetric gutter, same value as the page padding — keeps the copyright off the stack above and the viewport edge below. */
+      padding-block: var(--pad);
     }
 
     footer a {
