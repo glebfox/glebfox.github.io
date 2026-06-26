@@ -94,9 +94,8 @@
       min-height: 100%;
       padding: 1.5rem;
       font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+      /* The aurora (gradient + orbs) lives on the fixed .orbs layer, so it never clips on scroll. */
       color: var(--text);
-      /* Only `color` is animatable here — a gradient `background` can't transition, so it would no-op. */
       transition: color 0.3s;
     }
 
@@ -109,6 +108,7 @@
       overflow: hidden;
       pointer-events: none;
       user-select: none;
+      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
     }
 
     .orb {
@@ -193,30 +193,16 @@
 
     /* ── Theme toggle ─────────────────────────────────── */
 
+    /* The toggle is a .btn.btn-secondary; only the round shape and icon are bespoke
+       (border / fill / hover / focus ring all come from the shared button styles). */
     #theme-toggle {
       position: relative;
       width: 2.5rem;
       height: 2.5rem;
-      border: none;
+      padding: 0;
       border-radius: 50%;
-      background: var(--btn-bg);
-      color: var(--text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      transition: background 0.2s;
-      backdrop-filter: blur(4px);
-      outline: none;
-    }
-
-    #theme-toggle:hover {
-      background: var(--btn-hover);
-    }
-
-    #theme-toggle:focus-visible {
-      outline: 2px solid var(--muted);
-      outline-offset: 2px;
+      cursor: pointer;
     }
 
     /*
@@ -438,6 +424,8 @@
       font-size: 0.75rem;
       color: var(--muted);
       text-align: center;
+      /* Reserve space so the copyright never crowds the stack above or the viewport edge below. */
+      padding-top: 3rem;
     }
 
     footer a {
@@ -496,7 +484,7 @@
   </div>
 
   <header>
-    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme"></button>
+    <button id="theme-toggle" class="btn btn-secondary" aria-label="Toggle theme" title="Toggle theme"></button>
   </header>
 
   <main>
