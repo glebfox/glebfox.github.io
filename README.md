@@ -1,6 +1,6 @@
 # glebfox.com
 
-Personal landing page for Gleb Gorelov — a single static "coming soon" page hosted on GitHub Pages.
+Personal landing page for Gleb Gorelov — a concise editorial profile hosted on GitHub Pages.
 
 🔗 **[glebfox.com](https://glebfox.com)**
 
@@ -11,7 +11,8 @@ A minimal, self-contained page with zero external dependencies — pure HTML, CS
 Highlights:
 
 - **Adaptive theming** — light/dark via the CSS `color-scheme` property and `light-dark()`, following the OS by default with a manual toggle (persisted in `localStorage`, applied before paint to avoid a flash).
-- **Animated aurora background** — three drifting, blurred gradient orbs rendered purely in CSS.
+- **Editorial layout** — warm charcoal and paper themes, expressive Satoshi typography, a restrained amber accent, and a softly framed portrait.
+- **Subtle motion** — a coordinated page entrance and responsive link arrows, disabled for reduced motion.
 - **Accessible by default** — respects `prefers-reduced-motion`, supports Windows High Contrast (`forced-colors`), and ships keyboard-focusable controls.
 - **Adaptive SVG favicons** — light/dark variants selected via `prefers-color-scheme`.
 - **Tuned for performance** — preloaded display font, `font-display: swap`, and a fallback metric match to avoid layout shift.
@@ -32,7 +33,8 @@ Push to the `master` branch — GitHub Pages serves it automatically at the doma
 
 ```
 index.html              # The entire page — inline CSS and JS
-fonts/                  # Custom script display font (woff)
+fonts/                  # Self-hosted Satoshi variable font (woff2)
+images/                 # Portrait formats and social-preview card
 images/favicon/         # Adaptive light/dark SVG favicons
 CNAME                   # Custom domain for GitHub Pages
 ```

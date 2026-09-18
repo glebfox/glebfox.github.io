@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A single static HTML page — hero (avatar + name + intro + GitHub/Email), a "What I do" block grid, a tech-stack row, and a footer. No build system, no templating, no backend.
+Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A single static HTML page — introduction and portrait, three "What I do" areas, a smaller "Currently exploring" note, and a footer. No build system, no templating, no backend.
 
 ## Development
 
@@ -26,9 +26,9 @@ Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A 
 
 **Lighthouse CI:** `.github/workflows/lighthouse.yml` audits `index.html` on every push to `master` and on PRs, serving the repo root as a static site via `treosh/lighthouse-ci-action`. Budgets live in `lighthouserc.json`: accessibility / SEO / best-practices are hard-gated at 1.0; performance is warn-only (timing on shared CI runners fluctuates). Public repo → Actions minutes are free.
 
-**Accepted Lighthouse warning:** "Properly size images" (`uses-responsive-images`) flags the avatar — the single 448² file is deliberately the 2× asset for the 224px retina box, but Lighthouse's emulated DPR reads it as oversized. Performance is warn-only so it never gates; don't add `srcset` densities for the single-digit-KB saving.
+**Portrait sizing:** the single 448² asset supports the desktop portrait (208 × 240 CSS pixels), with a smaller mobile crop. Performance is warn-only; keep the existing AVIF/WebP/JPEG sources.
 
-**Audit forces reduced motion (gotcha):** `lighthouserc.json` sets `chromeFlags: "--force-prefers-reduced-motion"`. The entrance animation (`@keyframes enter`) starts `header`/`main`/`footer` at `opacity: 0`, which never advances in headless Lighthouse → `NO_FCP` → the whole audit fails. Reduced motion makes content statically visible (the gated categories are motion-independent). Revisit this flag if that animation changes.
+**Reduced motion:** the published site's 700ms fade and 20px entrance apply to `header`, the entire `main`, and `footer`, with 0/150/300ms delays. The entrance and link-arrow transitions run only under `prefers-reduced-motion: no-preference`. Reduced-motion users see fully opaque, stationary content immediately. The audit retains `--force-prefers-reduced-motion`; content is visible with or without it.
 
 **Run the audit locally:** `npx -y @lhci/cli@latest collect --config=./lighthouserc.json && npx -y @lhci/cli@latest assert --config=./lighthouserc.json` — needs Chrome; the config's `chromeFlags` handle headless + reduced motion, so it mirrors CI. `.lighthouseci/` is gitignored.
 
@@ -37,11 +37,11 @@ Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A 
 Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Files:**
-- `index.html` — the entire page; all CSS inline in `<style>`, all JS inline in `<script>`, all icons inline as `<svg>` (incl. the tech-stack brand logos)
+- `index.html` — the entire page; all CSS inline in `<style>`, all JS inline in `<script>`, theme icons embedded as SVG CSS masks
 - `fonts/Satoshi-Variable.woff2` — self-hosted Satoshi (variable, weights 300–900); the page's only web font, used for the name and all text (sourced from Fontshare)
-- `images/photo.{avif,webp,jpg}` — 448² hero avatar served via `<picture>` (AVIF ~27K → WebP ~29K → JPEG ~75K fallback), generated with `npx sharp` at 448² from `images/photo.png` (1000² source, also used for the og card; no native image CLI installed). `.hero picture { display: contents }` keeps the `<img>` the flex child so `.photo`'s sizing still applies
+- `images/photo.{avif,webp,jpg}` — 448² hero avatar served via `<picture>` (AVIF ~27K → WebP ~29K → JPEG ~75K fallback), generated with `npx sharp` at 448² from `images/photo.png` (1000² source, also used for the og card; no native image CLI installed); the picture occupies the right hero column on desktop and a compact slot beside the name on mobile
 - `images/favicon/` — two adaptive SVG favicons (`favicon-light.svg` / `favicon-dark.svg`); the `<link rel="icon">` tags pick one via `prefers-color-scheme` (replaced the old PNG set)
-- `images/og-image.png` — 1200×630 social-preview card (Open Graph / Twitter Card) referenced from `<head>`; a static dark render: avatar on the left, the name in Satoshi on the right
+- `images/og-image.png` — 1200×630 social-preview card (Open Graph / Twitter Card) referenced from `<head>`; a static dark editorial render: name and introduction on the left, portrait on the right
 
 **Why inline CSS:** no separate CSS file means no cache-busting problem on redeploy — styles are always fresh with the HTML.
 
@@ -49,14 +49,12 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Typography:** Satoshi (self-hosted variable woff2) for the name and all text. The name (`.name`) enables `font-feature-settings: "ss01"` for Satoshi's spur-less alternate **G** (`ss01` also swaps lowercase `a`, but "Gleb Gorelov" has none). The old Playlist script font is retired. `body` sets `font-size-adjust: from-font` so the fallback's x-height matches Satoshi during the `font-display: swap`, preventing reflow (CLS) on the LCP `.name`.
 
-**Full-height background (gotcha):** the page gradient is on `body { min-height: 100vh }`, NOT `html,body { height: 100% }` — the latter caps `body` to one viewport, so the gradient clips on scroll once content overflows. The fixed `.orbs` layer carries only the drifting blobs. The page gutter is the `--pad` variable (body padding + footer `padding-top`; the footer needs top padding only — `body` pads the bottom, don't double it).
+**Layout:** the content width is 63rem. The desktop hero has text on the left and a modest rectangular portrait on the right. Three equal work columns become aligned rows below 56rem and stacked blocks below 36rem. On mobile, the smaller portrait sits beside the name. The introduction's vertical rule and amber segment repeat once beside "Currently exploring". The portrait has a warm padded frame, soft shadow, and a slight static tilt; a CSS filter gently reduces saturation without changing the source assets.
 
-**Tech-stack logos:** inline Simple Icons SVGs on small white tiles (keeps brand colors legible in both themes). Slugs: `openjdk` (Java — Simple Icons dropped the trademarked Java cup, so it's the Duke mark), `webcomponentsdotorg`, `css` (not `css3`). JavaScript's fill is darkened — its brand yellow is illegible on a white tile.
+**Colors:** themed tokens use `oklch()` inside `light-dark()`. The solid backgrounds match warm paper `#f5f2ea` and charcoal `#171816`; the two `<meta name="theme-color">` tags mirror these values in hex. Primary text, secondary text, accent, and rules have dedicated tokens. No gradients, continuous background animation, or technology badges.
 
-**Colors:** All color values use `oklch()`, wrapped in `light-dark()` for anything themed — keep both consistent when adding new colors. The two `<meta name="theme-color">` tags are the lone exception: they use hex (set per scheme via `media`, since `theme-color` accepts neither `oklch()` nor `light-dark()`) and must be hand-synced with `--bg-from` when the background changes.
+**Contrast (WCAG):** measure primary, secondary, and accent text against the solid background in both themes. All interactive controls have visible `:focus-visible` outlines; forced-colors mode preserves the theme icon and button border.
 
-**Contrast (WCAG):** no built-in check resolves `oklch()` contrast — compute ratios by converting `oklch()` → sRGB → relative luminance. For light-theme text over the background gradient the worst case is the *darker* stop `--bg-to` (closest in lightness to the text), not `--bg-from`. For text on a tinted surface (e.g. `.btn-primary`, whose text is `--accent` over a `color-mix(--accent 12%, transparent)` fill) the worst case is that tint composited over `--bg-to` — ~0.4 lower than against the bare gradient, so check it explicitly.
+**Social preview card:** `images/og-image.png` is a static, hand-generated render (warm charcoal + the name in Satoshi on the left + the portrait on the right), referenced by the Open Graph / Twitter tags in `<head>`. It is intentionally non-adaptive — a link scraper has no color-scheme to honor — and its `og:image`/`twitter:image` URLs are absolute, since scrapers fetch them server-side. No build step produces it; if the background palette or the wordmark changes, regenerate the PNG so the card stays in sync with the page.
 
-**Social preview card:** `images/og-image.png` is a static, hand-generated render (dark aurora + the avatar on the left + the name in Satoshi), referenced by the Open Graph / Twitter tags in `<head>`. It is intentionally non-adaptive — a link scraper has no color-scheme to honor — and its `og:image`/`twitter:image` URLs are absolute, since scrapers fetch them server-side. No build step produces it; if the background palette or the wordmark changes, regenerate the PNG so the card stays in sync with the page.
-
-**Regenerating `og-image.png`:** mirror the page's dark values + orbs/gradient + Satoshi (with `ss01`) + the avatar into a throwaway 1200×630 HTML mock, render it in a headless browser (served over HTTP, not `file://`, so `@font-face` + the photo load), wait for `document.fonts.ready`, then screenshot to PNG — commit only the PNG and discard the mock and any render artifacts.
+**Regenerating `og-image.png`:** mirror the page's dark palette + editorial rule + Satoshi (with `ss01`) + the framed portrait (including its CSS filter) into a throwaway 1200×630 HTML mock, render it in a headless browser (served over HTTP, not `file://`, so `@font-face` + the photo load), wait for `document.fonts.ready`, then screenshot to PNG — commit only the PNG and discard the mock and any render artifacts.
