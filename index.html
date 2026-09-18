@@ -74,8 +74,6 @@
          --muted is therefore tuned against the worst point of that field, not the bare
          gradient: light against the field's darkest patch, dark against its lightest. */
       --muted:     light-dark(oklch(40% 0.01 260),  oklch(78% 0.01 260));
-      /* Hairline rules: above each "What I do" column, under the section, above the footer. */
-      --rule:      light-dark(oklch(0% 0 0 / 0.12), oklch(100% 0 0 / 0.14));
       --btn-bg:    light-dark(oklch(0% 0 0 / 0.07), oklch(100% 0 0 / 0.10));
       --btn-hover: light-dark(oklch(0% 0 0 / 0.13), oklch(100% 0 0 / 0.18));
       /* The orb alpha lives in the colour, not in .orb { opacity }, so it can differ per
@@ -374,60 +372,20 @@
       margin: 0.4rem 0 1.75rem;
     }
 
-    /* Three columns for the three standing responsibilities; each sits under its own
-       hairline so the set reads as one ruled band rather than four loose blocks. */
     .do-grid {
       list-style: none;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.9rem 2.75rem;
     }
 
-    .do-item {
-      border-top: 1px solid var(--rule);
-      padding-top: 1.1rem;
-    }
+    .do-item { display: flex; gap: 1rem; }
 
     .do-ic {
-      display: block;
-      width: 1.6rem;
-      height: 1.6rem;
-      margin-bottom: 0.75rem;
-      color: var(--accent);
-    }
-
-    /* The fourth block is deliberately outside the three: it is what he is currently
-       poking at, not part of the standing set. A full-width rule sets it apart, and it
-       runs as a single row — label on the left, the block itself on the right. */
-    .do-now {
-      margin-top: 2.25rem;
-      border-top: 1px solid var(--rule);
-      padding-top: 1.25rem;
-      display: grid;
-      grid-template-columns: 11rem 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-
-    .do-now-label {
-      font-weight: 500;
-      font-size: 0.6875rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding-top: 0.15rem;
-    }
-
-    .do-now .do-item {
-      border-top: none;
-      padding-top: 0;
-      display: flex;
-      gap: 1rem;
-    }
-
-    .do-now .do-ic {
       flex: none;
-      margin-bottom: 0;
+      width: 1.9rem;
+      height: 1.9rem;
+      color: var(--accent);
     }
 
     .do-ic svg { width: 100%; height: 100%; display: block; }
@@ -457,7 +415,7 @@
       width: 100%;
       max-width: 52rem;
       margin: 3.25rem auto 0;
-      border-top: 1px solid var(--rule);
+      border-top: 1px solid light-dark(oklch(0% 0 0 / 0.10), oklch(100% 0 0 / 0.12));
       padding-top: 1.75rem;
     }
 
@@ -477,8 +435,7 @@
       .hero picture { width: 11rem; height: 11rem; }
       .intro { max-width: none; }
       .actions { justify-content: center; }
-      .do-grid { grid-template-columns: 1fr; gap: 1.6rem; }
-      .do-now { grid-template-columns: 1fr; gap: 0.9rem; }
+      .do-grid { grid-template-columns: 1fr; }
     }
 
     /* ── Reduced motion ───────────────────────────────── */
@@ -557,15 +514,11 @@
           <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 2.5 9 12 14l9.5-5L12 4z"/><path d="M6.5 11.2V16c0 1.4 2.6 2.8 5.5 2.8s5.5-1.4 5.5-2.8v-4.8"/></svg></span>
           <div><h3>Teaching the craft</h3><p>Training materials, trainings, and online workshops for developers picking Jmix up. I like passing it on.</p></div>
         </li>
-      </ul>
-
-      <div class="do-now">
-        <p class="do-now-label" id="now-h">Currently exploring</p>
-        <div class="do-item" aria-labelledby="now-h">
+        <li class="do-item">
           <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="M7 9.5 10 12l-3 2.5"/><path d="M12.5 15H17"/></svg></span>
           <div><h3>Agentic coding</h3><p>Lately the engineering of it — not vibe-coding, but a proper harness of process and guardrails. Partly to see how much I can hand off before it quietly applies for my job.</p></div>
-        </div>
-      </div>
+        </li>
+      </ul>
     </section>
   </main>
 
