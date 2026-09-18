@@ -73,7 +73,7 @@
          the whole orb field — its luminance extremes are reachable, not hypothetical.
          --muted is therefore tuned against the worst point of that field, not the bare
          gradient: light against the field's darkest patch, dark against its lightest. */
-      --muted:     light-dark(oklch(40% 0.01 260),  oklch(78% 0.01 260));
+      --muted:     light-dark(oklch(38% 0.01 260),  oklch(81% 0.01 260));
       --btn-bg:    light-dark(oklch(0% 0 0 / 0.07), oklch(100% 0 0 / 0.10));
       --btn-hover: light-dark(oklch(0% 0 0 / 0.13), oklch(100% 0 0 / 0.18));
       /* The orb alpha lives in the colour, not in .orb { opacity }, so it can differ per
@@ -87,8 +87,8 @@
 
       /* Single accent: links, primary button, section underline, "What I do" icons.
          Darker in light theme so it clears WCAG AA — incl. as text on the .btn-primary
-         12%-accent tinted background (worst case ~4.6:1), not just the bare gradient. */
-      --accent:    light-dark(oklch(41% 0.18 290),  oklch(81% 0.12 290));
+         12%-accent tinted background, not just the bare gradient. */
+      --accent:    light-dark(oklch(38% 0.18 290),  oklch(81% 0.12 290));
     }
 
     *, *::before, *::after {
@@ -108,7 +108,9 @@
       /* Normalize the fallback's x-height to Satoshi's while it swaps in, so the
          font-display: swap exchange doesn't reflow text (CLS) — esp. the LCP .name. */
       font-size-adjust: from-font;
-      background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+      /* Interpolate in oklab: both stops are oklch, and the sRGB default ramps through a
+         muddier midpoint between them. */
+      background: linear-gradient(in oklab 135deg, var(--bg-from), var(--bg-to));
       color: var(--text);
       transition: color 0.3s;
     }
@@ -285,7 +287,7 @@
       isolation: isolate;
       border: 1px solid light-dark(oklch(0% 0 0 / 0.12), oklch(100% 0 0 / 0.18));
       box-shadow: 0 0 0 10px light-dark(oklch(0% 0 0 / 0.04), oklch(100% 0 0 / 0.04)),
-                  0 24px 60px oklch(0% 0 0 / 0.30);
+                  0 24px 60px light-dark(oklch(0% 0 0 / 0.18), oklch(0% 0 0 / 0.45));
     }
 
     .photo {

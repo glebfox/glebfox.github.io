@@ -43,7 +43,7 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 - `fonts/Satoshi-Variable.woff2` — self-hosted Satoshi (variable, weights 300–900); the page's only web font, used for the name and all text (sourced from Fontshare)
 - `images/photo.{avif,webp,jpg}` — 448² hero avatar served via `<picture>` (AVIF ~27K → WebP ~29K → JPEG ~75K fallback), generated with `npx sharp` at 448² from `images/photo.png` (1000² source, also used for the og card; the only image tools on this machine are `sips` and `cjpeg` — neither writes AVIF or WebP, so any re-encode needs `sharp` and must regenerate all three formats together or the `<picture>` will serve different crops per browser). `.hero picture` is the sizing box (border-radius + ring + `overflow: hidden`); `.photo` fills it and is zoomed with `transform: scale()` to crop past the street background, so the crop costs no bytes and needs no re-encode
 - `images/favicon/` — two adaptive SVG favicons (`favicon-light.svg` / `favicon-dark.svg`); the `<link rel="icon">` tags pick one via `prefers-color-scheme` (replaced the old PNG set)
-- `images/og-image.png` — 1200×630 social-preview card (Open Graph / Twitter Card) referenced from `<head>`; a static dark render: avatar on the left, the name in Satoshi on the right
+- `images/og-image.png` — 1200×630 social-preview card (Open Graph / Twitter Card) referenced from `<head>`; a static dark render: avatar on the left, and on the right the eyebrow line, the name in Satoshi, then `glebfox.com`
 
 **Why inline CSS:** no separate CSS file means no cache-busting problem on redeploy — styles are always fresh with the HTML.
 
@@ -61,6 +61,8 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Contrast (WCAG) — measure against the orb layer, not the gradient:** `.orbs` is `position: fixed`, so scrolling slides every text block across the whole orb field. Any text can end up over any part of it, which makes the field's luminance extremes genuinely reachable rather than a hypothetical worst case. Checking text against the bare `--bg-from`/`--bg-to` gradient therefore passes colors that fail on screen — `--muted` measured 5.3:1 against the bare gradient and 2.6:1 over the field.
 
+Sample the field across the **whole drift cycle and several viewports**, not one frame at one size: the orbs are `vmax`-sized and animated, so a single snapshot can miss the brightest moment. Freeze them with `animation-play-state: paused` and step `animation-delay` from `0s` to `-28s` (the longest period), taking min/max over every frame. In practice the blur keeps overlapping orbs from stacking to their full alpha, so a model that composites two orbs at full strength over a gradient stop overstates the damage — measure, don't model.
+
 **How to measure it:** reconstruct the field with the browser's own rasterizer instead of modelling the blur. In the page, paint `body`'s gradient into a `<canvas>`, then for each `.orb` read its `getBoundingClientRect()` and computed `background-color` / `filter` and redraw it with `ctx.filter = 'blur(80px)'`; `getImageData` over the result gives the true min/max luminance, which is what each text color must clear. Two traps make a hand-rolled version silently wrong:
 
 - `getComputedStyle(el).color` returns an **`oklch(...)`/`oklab(...)` string**, not `rgb()`. Parsing the first three numbers yields `0.95, 0.01, 260` read as RGB — plausible-looking garbage. Convert by painting the color into a 1×1 canvas and reading the pixel back.
@@ -70,6 +72,14 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Tinted surfaces:** for text on a tint (e.g. `.btn-primary`, whose text is `--accent` over a `color-mix(--accent 12%, transparent)` fill), composite the tint over the field first and check the result explicitly — it runs well below the bare-backdrop figure.
 
-**Social preview card:** `images/og-image.png` is a static, hand-generated render (dark aurora + the avatar on the left + the name in Satoshi), referenced by the Open Graph / Twitter tags in `<head>`. It is intentionally non-adaptive — a link scraper has no color-scheme to honor — and its `og:image`/`twitter:image` URLs are absolute, since scrapers fetch them server-side. No build step produces it; if the background palette or the wordmark changes, regenerate the PNG so the card stays in sync with the page.
+**Social preview card:** `images/og-image.png` is a static, hand-generated render (dark aurora + the avatar on the left + eyebrow / name / domain on the right), referenced by the Open Graph / Twitter tags in `<head>`. It is intentionally non-adaptive — a link scraper has no color-scheme to honor — and its `og:image`/`twitter:image` URLs are absolute, since scrapers fetch them server-side. No build step produces it; if the background palette or the wordmark changes, regenerate the PNG so the card stays in sync with the page.
 
-**Regenerating `og-image.png`:** mirror the page's dark values + orbs/gradient + Satoshi (with `ss01`) + the avatar into a throwaway 1200×630 HTML mock, render it in a headless browser (served over HTTP, not `file://`, so `@font-face` + the photo load), wait for `document.fonts.ready`, then screenshot to PNG — commit only the PNG and discard the mock and any render artifacts.
+**Regenerating `og-image.png`:** mirror the page's dark values + orbs/gradient + Satoshi (with `ss01`) + the avatar **with the same `transform: scale()` crop the hero uses** into a throwaway 1200×630 HTML mock at the repo root (so `fonts/` and `images/` resolve), and keep the existing composition — eyebrow, name, domain. Render it over HTTP, not `file://`, or `@font-face` and the photo won't load. There is no image CLI here, but Chrome is installed and renders it headlessly:
+
+```
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \
+  --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 \
+  --virtual-time-budget=8000 --screenshot=out.png http://127.0.0.1:PORT/og-mock.html
+```
+
+`--virtual-time-budget` is what waits for the font and photo; `--force-device-scale-factor=1` keeps it exactly 1200×630. Commit only the PNG and delete the mock. The card's weight is irrelevant to the page budget — scrapers fetch it, the page never does. Note the hero crop is part of the card now: change `.photo`'s zoom and the card goes stale.
