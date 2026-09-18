@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A single static HTML page — hero (avatar + name + intro + GitHub/Email), a "What I do" block grid, and a footer. No build system, no templating, no backend.
 
-It is a visiting card, not a CV: deliberately a dead end with no proof-links, no talks or article lists, and no skill inventory. A design review proposed adding footer links to talks/articles/docs and was declined on exactly that ground — don't re-propose it. Keep copy understated and evergreen (no dates, counters, or links that rot); the only external links are GitHub and email.
+Keep copy understated and evergreen (no dates, counters, or links that rot); the only external links are GitHub and email.
 
 ## Development
 
