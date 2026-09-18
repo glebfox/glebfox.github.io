@@ -258,19 +258,30 @@
       align-items: center;
     }
 
-    /* The <picture> is just a format-selection wrapper — let the <img> stay the flex child
-       so .photo's flex:none / sizing apply directly. */
-    .hero picture { display: contents; }
-
-    .photo {
+    /* The <picture> carries the frame (it used to be display:contents, with the <img> as
+       the flex child). It needs to be a real box so the photo can be zoomed inside it:
+       the source is a street snapshot, and cropping in past the brick/gate/car leaves the
+       face rather than the surroundings. Done here rather than by re-encoding, because the
+       <picture> serves avif/webp/jpeg and only two of those can be regenerated on this
+       machine — a re-crop would ship three formats showing different crops. */
+    .hero picture {
+      display: block;
       flex: none;
       width: 14rem;
       height: 14rem;
       border-radius: 50%;
-      object-fit: cover;
+      overflow: hidden;
       border: 1px solid light-dark(oklch(0% 0 0 / 0.12), oklch(100% 0 0 / 0.18));
       box-shadow: 0 0 0 10px light-dark(oklch(0% 0 0 / 0.04), oklch(100% 0 0 / 0.04)),
                   0 24px 60px oklch(0% 0 0 / 0.30);
+    }
+
+    .photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.18);
+      transform-origin: 52% 40%;
     }
 
     .eyebrow {
@@ -453,7 +464,7 @@
 
     @media (max-width: 40rem) {
       .hero { flex-direction: column; align-items: center; text-align: center; gap: 1.75rem; }
-      .photo { width: 11rem; height: 11rem; }
+      .hero picture { width: 11rem; height: 11rem; }
       .intro { max-width: none; }
       .actions { justify-content: center; }
       .do-grid { grid-template-columns: 1fr; }
