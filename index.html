@@ -279,6 +279,10 @@
       height: 14rem;
       border-radius: 50%;
       overflow: hidden;
+      /* .photo inside is transform: scale()d; WebKit can fail to clip a transformed
+         descendant to a border-radius + overflow:hidden box, letting the image's square
+         corners bleed past the circle. A stacking context forces the clip. */
+      isolation: isolate;
       border: 1px solid light-dark(oklch(0% 0 0 / 0.12), oklch(100% 0 0 / 0.18));
       box-shadow: 0 0 0 10px light-dark(oklch(0% 0 0 / 0.04), oklch(100% 0 0 / 0.04)),
                   0 24px 60px oklch(0% 0 0 / 0.30);
@@ -419,15 +423,6 @@
       padding-top: 1.75rem;
     }
 
-    footer a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
     /* ── Responsive ───────────────────────────────────── */
 
     @media (max-width: 40rem) {
@@ -457,11 +452,15 @@
   <script>
     // Apply a saved override before first paint to avoid a flash.
     // With no saved preference, CSS `color-scheme: light dark` follows the OS.
+    // Storage access throws outright in some privacy modes, and this runs before paint —
+    // an uncaught throw here would take the rest of the inline script with it.
     (function () {
-      var saved = localStorage.getItem('theme');
-      if (saved === 'light' || saved === 'dark') {
-        document.documentElement.style.colorScheme = saved;
-      }
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.style.colorScheme = saved;
+        }
+      } catch (e) { /* no persistence available — fall back to following the OS */ }
     })();
   </script>
 </head>
@@ -501,7 +500,7 @@
     <section class="do" aria-labelledby="do-h">
       <h2 id="do-h" class="section-h">What I do</h2>
       <div class="section-u" aria-hidden="true"></div>
-      <ul class="do-grid">
+      <ul class="do-grid" role="list">
         <li class="do-item">
           <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
           <div><h3>Building the UI</h3><p>The UI layer of Jmix — and CUBA Platform before it: components and behavior on Vaadin and Web Components, over Java and Spring Boot.</p></div>
@@ -540,11 +539,15 @@
       if (next === systemScheme) {
         // Toggling back to the system scheme: drop the override so the page follows the OS again.
         root.style.colorScheme = '';
-        localStorage.removeItem('theme');
       } else {
         root.style.colorScheme = next;
-        localStorage.setItem('theme', next);
       }
+      // The toggle itself must keep working even where storage is unavailable; only the
+      // persistence across reloads is lost.
+      try {
+        if (next === systemScheme) localStorage.removeItem('theme');
+        else localStorage.setItem('theme', next);
+      } catch (e) { /* no persistence available */ }
     });
   </script>
 
