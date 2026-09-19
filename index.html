@@ -339,18 +339,36 @@
     document.getElementById('year').textContent = new Date().getFullYear();
 
     var root = document.documentElement;
-    document.getElementById('theme-toggle').addEventListener('click', function () {
-      var systemScheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    var themeToggle = document.getElementById('theme-toggle');
+    var systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function currentTheme() {
+      var override = root.style.colorScheme;
+      return override === 'light' || override === 'dark'
+        ? override
+        : systemTheme.matches ? 'dark' : 'light';
+    }
+
+    function updateThemeLabel() {
+      var label = currentTheme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+      themeToggle.setAttribute('aria-label', label);
+      themeToggle.title = label;
+    }
+
+    updateThemeLabel();
+    systemTheme.addEventListener('change', updateThemeLabel);
+
+    themeToggle.addEventListener('click', function () {
+      var systemScheme = systemTheme.matches ? 'dark' : 'light';
       // Fall back to the OS preference when no explicit override is set yet.
-      var current = root.style.colorScheme;
-      if (current !== 'light' && current !== 'dark') current = systemScheme;
-      var next = current === 'dark' ? 'light' : 'dark';
+      var next = currentTheme() === 'dark' ? 'light' : 'dark';
       if (next === systemScheme) {
         // Toggling back to the system scheme: drop the override so the page follows the OS again.
         root.style.colorScheme = '';
       } else {
         root.style.colorScheme = next;
       }
+      updateThemeLabel();
       // The toggle itself must keep working even where storage is unavailable; only the
       // persistence across reloads is lost.
       try {
