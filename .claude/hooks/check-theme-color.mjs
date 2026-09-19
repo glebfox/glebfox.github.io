@@ -2,8 +2,8 @@
 // PostToolUse hook — non-blocking advisory.
 //
 // `theme-color` <meta> tags accept neither oklch() nor light-dark(), so their hex
-// values are hand-synced with --bg-from (see CLAUDE.md). This catches drift: when
-// index.html changes, it resolves --bg-from (light/dark) to sRGB hex and warns if
+// values are hand-synced with --bg (see CLAUDE.md). This catches drift: when
+// index.html changes, it resolves --bg (light/dark) to sRGB hex and warns if
 // the declared theme-color has fallen out of sync — printing the exact value to use.
 // It never blocks the edit (the tool has already run by PostToolUse time).
 
@@ -56,7 +56,7 @@ function oklchToRgb(L, C, H) {
 }
 
 function parseOklch(str) {
-  // oklch(L[%] C[%] H[deg]) — alpha (/ A) is ignored; --bg-from has none
+  // oklch(L[%] C[%] H[deg]) — alpha (/ A) is ignored; --bg has none
   const m = str.match(/oklch\(\s*([\d.]+)(%?)\s+([\d.]+)(%?)\s+([\d.]+)/i);
   if (!m) return null;
   let L = parseFloat(m[1]);
@@ -90,9 +90,9 @@ for (const tag of html.match(/<meta\b[^>]*name=["']theme-color["'][^>]*>/gi) || 
   if (scheme && content) declared[scheme.toLowerCase()] = { hex: content, line: lineOf(tag) };
 }
 
-// ── extract --bg-from light-dark pair ────────────────────────
+// ── extract --bg light-dark pair ────────────────────────
 const bg = html.match(
-  /--bg-from\s*:\s*light-dark\(\s*(oklch\([^)]*\))\s*,\s*(oklch\([^)]*\))\s*\)/i
+  /--bg\s*:\s*light-dark\(\s*(oklch\([^)]*\))\s*,\s*(oklch\([^)]*\))\s*\)/i
 );
 if (!bg) process.exit(0); // structure changed → nothing reliable to check
 
@@ -110,14 +110,14 @@ for (const scheme of ['light', 'dark']) {
   if (drift) {
     const at = dec.line ? ` (line ${dec.line})` : '';
     warnings.push(
-      `${scheme}: <meta name="theme-color"> is ${dec.hex}${at} but --bg-from ${scheme} resolves to ${toHex(exp)} — update it to ${toHex(exp)}`
+      `${scheme}: <meta name="theme-color"> is ${dec.hex}${at} but --bg ${scheme} resolves to ${toHex(exp)} — update it to ${toHex(exp)}`
     );
   }
 }
 
 if (warnings.length) {
   const message =
-    'theme-color / --bg-from drift in index.html (theme-color cannot use oklch()/light-dark(), so they are hand-synced):\n  ' +
+    'theme-color / --bg drift in index.html (theme-color cannot use oklch()/light-dark(), so they are hand-synced):\n  ' +
     warnings.join('\n  ') +
     `\n(oklch→sRGB, tolerance ${TOLERANCE}/channel)`;
   process.stdout.write(

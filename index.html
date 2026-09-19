@@ -147,7 +147,7 @@
       gap: 4rem;
     }
 
-    .hero-text { position: relative; padding-left: 1.75rem; border-left: 1px solid var(--rule); }
+    .hero-text { grid-column: 1; grid-row: 1; position: relative; padding-left: 1.75rem; border-left: 1px solid var(--rule); }
     .hero-text::before {
       content: '';
       position: absolute;
@@ -169,13 +169,15 @@
 
     .eyebrow { font-size: 1rem; font-weight: 500; margin-bottom: 1.3rem; }
     .intro { max-width: 47ch; color: var(--muted); text-wrap: pretty; }
-    .actions { display: flex; gap: 1.75rem; margin-top: 1.5rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 1.75rem; margin-top: 1.5rem; }
     .actions a { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; font-size: 1rem; font-weight: 500; text-decoration: none; }
     /* One continuous underline spans the label, gap, and animated arrow. */
     .actions a::after { content: ''; position: absolute; inset-inline: 0; bottom: 0.55rem; border-bottom: 1px solid currentColor; }
     .actions span { font-size: 0.9rem; }
     .hero picture {
       display: block;
+      grid-column: 2;
+      grid-row: 1;
       padding: 0.5rem;
       border: 1px solid var(--photo-edge);
       border-radius: 0.8rem;
@@ -210,12 +212,12 @@
     @media (max-width: 36rem) {
       body { padding-top: 1rem; }
       header { margin-bottom: 1.75rem; }
-      .hero { grid-template-columns: minmax(0, 1fr) 6rem; gap: 0 1rem; align-items: center; }
+      .hero { grid-template-columns: minmax(0, 1fr); gap: 0; }
       .hero-text { display: contents; }
       .hero-text::before { content: none; }
-      .name { grid-column: 1; grid-row: 1; font-size: clamp(2.5rem, 11vw, 3.5rem); margin-bottom: 0; }
-      .hero picture { grid-column: 2; grid-row: 1; padding: 0.25rem; border-radius: 0.55rem; }
-      .photo { height: 7rem; border-radius: 0.25rem; }
+      .name { font-size: clamp(2.5rem, 11vw, 3.5rem); margin-bottom: 0; overflow-wrap: anywhere; }
+      .hero picture { grid-column: 1; grid-row: 1; justify-self: start; width: min(8rem, 100%); margin-bottom: 1.75rem; padding: 0.25rem; border-radius: 0.55rem; }
+      .photo { height: auto; aspect-ratio: 7 / 8; border-radius: 0.25rem; }
       .eyebrow { grid-column: 1 / -1; margin: 1.5rem 0 1.25rem; font-size: 0.9375rem; }
       .intro { grid-column: 1 / -1; padding-left: 1rem; border-left: 1px solid var(--rule); position: relative; }
       .intro::before { content: ''; position: absolute; top: 0; left: -1px; width: 2px; height: 2rem; background: var(--accent); }
@@ -271,6 +273,11 @@
 
   <main>
     <section class="hero" aria-labelledby="name">
+      <picture>
+        <source srcset="images/photo.avif" type="image/avif">
+        <source srcset="images/photo.webp" type="image/webp">
+        <img class="photo" src="images/photo.jpg" width="448" height="448" alt="Gleb Gorelov" fetchpriority="high" decoding="sync">
+      </picture>
       <div class="hero-text">
         <h1 id="name" class="name">Gleb Gorelov</h1>
         <p class="eyebrow">UI engineer · Tech &amp; team lead · Jmix</p>
@@ -280,11 +287,6 @@
           <a href="mailto:glebfox@gmail.com">Email <span aria-hidden="true">↗</span></a>
         </div>
       </div>
-      <picture>
-        <source srcset="images/photo.avif" type="image/avif">
-        <source srcset="images/photo.webp" type="image/webp">
-        <img class="photo" src="images/photo.jpg" width="448" height="448" alt="Gleb Gorelov" fetchpriority="high" decoding="sync">
-      </picture>
     </section>
 
     <section class="do" aria-labelledby="do-h">
