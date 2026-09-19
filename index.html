@@ -102,10 +102,12 @@
       border-radius: 50%;
       background: transparent;
       color: var(--muted);
-      cursor: pointer;
+      cursor: default;
     }
 
-    #theme-toggle:hover { color: var(--text); border-color: var(--accent); }
+    #theme-toggle:enabled { cursor: pointer; }
+    #theme-toggle:enabled:hover { color: var(--text); border-color: var(--accent); }
+    #theme-toggle:disabled { opacity: 0.5; }
     #theme-toggle:focus-visible { outline-offset: 2px; }
 
     .visually-hidden {
@@ -269,9 +271,12 @@
     @media (forced-colors: active) {
       .hero picture { border-color: CanvasText; box-shadow: none; }
       .photo { filter: none; }
-      #theme-toggle { border-color: ButtonText; }
+      #theme-toggle { color: ButtonText; border-color: ButtonText; }
+      #theme-toggle:disabled { color: GrayText; border-color: GrayText; opacity: 1; }
       #theme-toggle::before { background-color: light-dark(transparent, ButtonText); }
       #theme-toggle::after { background-color: light-dark(ButtonText, transparent); }
+      #theme-toggle:disabled::before { background-color: light-dark(transparent, GrayText); }
+      #theme-toggle:disabled::after { background-color: light-dark(GrayText, transparent); }
     }
   </style>
 
