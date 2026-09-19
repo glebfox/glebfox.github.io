@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal landing page for Gleb Gorelov (glebfox.com), hosted on GitHub Pages. A single static HTML page — introduction and portrait, three "What I do" areas, a smaller "Currently exploring" note, and a footer. No build system, no templating, no backend.
 
+Keep copy understated and evergreen (no dates, counters, or links that rot); the only external links are GitHub and email.
+
 ## Development
 
 **No build step.** Open `index.html` directly in a browser to preview.
@@ -45,9 +47,15 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 - `images/favicon/` — two adaptive SVG favicons (`favicon-light.svg` / `favicon-dark.svg`); the `<link rel="icon">` tags pick one via `prefers-color-scheme` (replaced the old PNG set)
 - `images/og-image.png` — 1200×630 social-preview card (Open Graph / Twitter Card) referenced from `<head>`; a static dark editorial render: name and introduction on the left, portrait on the right
 
+**Portrait formats:** if re-encoding or changing the source crop, regenerate AVIF, WebP, and JPEG together so browsers receive the same image. CSS-only framing needs no asset re-encode.
+
 **Why inline CSS:** no separate CSS file means no cache-busting problem on redeploy — styles are always fresh with the HTML.
 
 **Theming:** Light/dark via the CSS `color-scheme` property and `light-dark()`. A single set of variables in `:root` is resolved with `light-dark(light, dark)`; a `<meta name="color-scheme" content="light dark">` plus the `:root` default makes the page follow the OS. The toggle pins an explicit `color-scheme: light`/`dark` inline on `<html>` (persisted in `localStorage`, reapplied before paint to avoid a flash); toggling back to the scheme that matches the OS clears the override so the page follows the system again. The toggle icon (sun/moon) is also driven purely by `color-scheme` — two pseudo-elements whose visibility is switched with `light-dark()`.
+
+**Storage availability:** reads and writes to `localStorage` are guarded. When storage is blocked, the page starts with the OS theme and the toggle still works for the current page; only persistence is unavailable. Keep these guards when changing theme behavior.
+
+**List semantics:** retain `role="list"` on the work-area list because its CSS removes list markers.
 
 **Typography:** Satoshi (self-hosted variable woff2) for the name and all text. The name (`.name`) enables `font-feature-settings: "ss01"` for Satoshi's spur-less alternate **G** (`ss01` also swaps lowercase `a`, but "Gleb Gorelov" has none). The old Playlist script font is retired. `body` sets `font-size-adjust: from-font` so the fallback's x-height matches Satoshi during the `font-display: swap`, preventing reflow (CLS) on the LCP `.name`.
 
