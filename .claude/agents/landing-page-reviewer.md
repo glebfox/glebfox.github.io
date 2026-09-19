@@ -22,7 +22,7 @@ Work through these, every time, with exact values:
 
 4. **Reduced motion & forced colors.** Confirm entrance and link-arrow animations are restricted to `@media (prefers-reduced-motion: no-preference)` and content is immediately visible otherwise, and `@media (forced-colors: active)` keeps the toggle icon visible.
 
-5. **Responsive.** Check the mobile portrait appears above the name and copy, with the frame and tilt preserved. Check 320px and 375px widths at both 100% and 200% root font size: no horizontal overflow, overlapping content, or clipped text; contact links can wrap. Desktop keeps text left and portrait right.
+5. **Responsive.** Check the mobile portrait sits beside the name at ordinary font sizes and stacks above the centered name when the content width falls below 17rem, with the frame and tilt preserved. Check 320px and 375px widths at both 100% and 200% root font size: no horizontal overflow, overlapping content, or clipped text; contact links can wrap. Desktop keeps text left and portrait right.
 
 6. **Semantics & a11y.** Exactly one `<h1>`; `lang` on `<html>`; the toggle `<button>` has an `aria-label`; decorative link arrows are `aria-hidden`; visible `:focus-visible` styling exists.
 
