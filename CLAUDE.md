@@ -53,6 +53,8 @@ Single-page site. Zero external dependencies — pure HTML/CSS/JS only.
 
 **Theming:** Light/dark via the CSS `color-scheme` property and `light-dark()`. A single set of variables in `:root` is resolved with `light-dark(light, dark)`; a `<meta name="color-scheme" content="light dark">` plus the `:root` default makes the page follow the OS. The toggle pins an explicit `color-scheme: light`/`dark` inline on `<html>` (persisted in `localStorage`, reapplied before paint to avoid a flash); toggling back to the scheme that matches the OS clears the override so the page follows the system again. The toggle icon (sun/moon) is also driven purely by `color-scheme` — two pseudo-elements whose visibility is switched with `light-dark()`.
 
+**Theme accessibility:** the toggle's accessible name and tooltip describe its next action ("Switch to light theme" / "Switch to dark theme") and update on initialization, clicks, and system preference changes. A visually hidden `role="status"` announces the effective theme only when it changes after initialization; keep it empty on load and do not update it for system changes masked by an override. The button retains a generic fallback name and stays disabled until its label and click handler are initialized.
+
 **Storage availability:** reads and writes to `localStorage` are guarded. When storage is blocked, the page starts with the OS theme and the toggle still works for the current page; only persistence is unavailable. Keep these guards when changing theme behavior.
 
 **List semantics:** retain `role="list"` on the work-area list because its CSS removes list markers.
