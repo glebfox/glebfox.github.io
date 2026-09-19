@@ -12,19 +12,19 @@ You do **static** review only. **Never edit files.** Runtime/visual checks (rend
 
 Work through these, every time, with exact values:
 
-1. **Contrast (WCAG 2.2).** Compute real contrast ratios — don't eyeball. The background is a `linear-gradient(--bg-from → --bg-to)`, so check text against the *worst-case* stop in each theme. Do it for **both** light and dark, for `--text` and (especially) `--muted`:
+1. **Contrast (WCAG 2.2).** Compute real contrast ratios — don't eyeball. The page uses a solid `--bg` resolved with `light-dark()`. Check **both** light and dark backgrounds against `--text`, `--muted`, and `--accent`:
    - Convert each `oklch()` to sRGB, compute relative luminance, then the ratio. A pure-Node helper is fine — there are no npm deps, use the oklch→sRGB math (oklab → linear sRGB → gamma) directly.
-   - Thresholds: 4.5:1 for body text, 3:1 for large text (≥24px, or ≥18.66px bold). The footer (`0.75rem`, `--muted`) and the `.tagline` (`--muted`) are the likeliest failures — report their exact ratios.
+   - Thresholds: 4.5:1 for body text, 3:1 for large text (≥24px, or ≥18.66px bold). The footer (`0.75rem`, `--muted`) and the introductory copy (`--muted`) are the likeliest failures — report their exact ratios.
 
-2. **theme-color / favicon ↔ scheme pairing.** Both the two `<meta name="theme-color">` tags and the two favicon `<link rel="icon">` tags must branch on `prefers-color-scheme` and pair with the matching background. (A PostToolUse hook already flags `theme-color` *hex drift* vs `--bg-from`; you confirm the *structure* — both schemes present and correctly paired.)
+2. **theme-color / favicon ↔ scheme pairing.** Both the two `<meta name="theme-color">` tags and the two favicon `<link rel="icon">` tags must branch on `prefers-color-scheme` and pair with the matching background. (A PostToolUse hook already flags `theme-color` *hex drift* vs `--bg`; you confirm the *structure* — both schemes present and correctly paired.)
 
 3. **Theme-toggle logic** (the inline `<script>`s). Verify: the pre-paint script applies a saved `light`/`dark` before first paint (no flash); the click handler detects the system scheme via `matchMedia`; an override is set **only** when it diverges from the system; and returning to the system scheme **clears** the override (`colorScheme = ''` + `localStorage.removeItem`) so the page follows the OS again. Flag any path that leaves stale state.
 
-4. **Reduced motion & forced colors.** Confirm `@media (prefers-reduced-motion: reduce)` disables the orb drift *and* the entrance animations, and `@media (forced-colors: active)` keeps the toggle icon visible.
+4. **Reduced motion & forced colors.** Confirm entrance and link-arrow animations are restricted to `@media (prefers-reduced-motion: no-preference)` and content is immediately visible otherwise, and `@media (forced-colors: active)` keeps the toggle icon visible.
 
-5. **Responsive.** `clamp()` sizing on `h1`/`.tagline`; no horizontal overflow at 320px; orbs sized in `vmax`, `aria-hidden`, and `pointer-events:none`.
+5. **Responsive.** Check the mobile portrait sits beside the name at ordinary font sizes and stacks above the centered name when the content width falls below 17rem, with the frame and tilt preserved. Check 320px and 375px widths at both 100% and 200% root font size: no horizontal overflow, overlapping content, or clipped text; contact links can wrap. Desktop keeps text left and portrait right.
 
-6. **Semantics & a11y.** Exactly one `<h1>`; `lang` on `<html>`; the toggle `<button>` has an `aria-label`; decorative orbs are `aria-hidden`; visible `:focus-visible` styling exists.
+6. **Semantics & a11y.** Exactly one `<h1>`; `lang` on `<html>`; the toggle `<button>` has an `aria-label`; decorative link arrows are `aria-hidden`; visible `:focus-visible` styling exists.
 
 7. **SEO / social.** `description`, `author`, `title` are present — but flag **missing Open Graph** (`og:title`, `og:description`, `og:image`, `og:url`, `og:type`) and **Twitter Card** tags, which control link-preview cards for a personal page. Note a missing `rel="canonical"` too.
 

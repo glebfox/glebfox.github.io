@@ -30,11 +30,11 @@ Use the Playwright MCP browser tools (`mcp__plugin_playwright_playwright__browse
 
 **B — Both schemes render.** Emulate each OS preference and screenshot, so you see how the page looks when following the system (not just the toggle override). Use `browser_run_code_unsafe` to call `page.emulateMedia({ colorScheme: 'light' })`, reload, screenshot; repeat for `'dark'`. If media emulation is unavailable, force the scheme via `document.documentElement.style.colorScheme` instead and note that this exercises the override path rather than OS-follow.
 
-**C — Responsive.** `browser_resize` to 375×667 (mobile) and 1280×800 (desktop). At each, screenshot and assert no horizontal overflow: `document.documentElement.scrollWidth <= window.innerWidth`.
+**C — Responsive.** `browser_resize` to 375×667 (mobile) and 1280×800 (desktop). At each, screenshot and assert no horizontal overflow: `document.documentElement.scrollWidth <= window.innerWidth`. At 320px and 375px with the default font size, confirm the portrait remains beside the name. Then check the same widths with `document.documentElement.style.fontSize = "200%"`: the portrait must remain above the name without overlap, all text must stay readable, and links must wrap rather than overflow. Reset the inline font size afterward. Check the DOM places the portrait before the introduction, matching the stacked reading order.
 
-**D — Per-scheme metadata.** Confirm the DOM declares **both** scheme variants for each: two `<meta name="theme-color">` (light/dark `media`) and two favicon `<link rel="icon">` (light/dark `media`). (The PostToolUse hook separately checks the `theme-color` hex matches `--bg-from`; here just confirm the pairs exist.)
+**D — Per-scheme metadata.** Confirm the DOM declares **both** scheme variants for each: two `<meta name="theme-color">` (light/dark `media`) and two favicon `<link rel="icon">` (light/dark `media`). (The PostToolUse hook separately checks the `theme-color` hex matches `--bg`; here just confirm the pairs exist.)
 
-**E — Reduced motion.** Emulate `prefers-reduced-motion: reduce` (via `browser_run_code_unsafe` → `page.emulateMedia({ reducedMotion: 'reduce' })`), reload, and confirm the orb drift and entrance animations are suppressed.
+**E — Reduced motion.** Emulate `prefers-reduced-motion: reduce` (via `browser_run_code_unsafe` → `page.emulateMedia({ reducedMotion: 'reduce' })`), reload, and confirm entrance animations and link-arrow transitions are suppressed while all content remains visible.
 
 **F — Console.** Read `browser_console_messages`; there should be zero errors or warnings.
 

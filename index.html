@@ -35,8 +35,8 @@
 
   <!-- Declare supported color schemes early so the browser themes the canvas before CSS parses. -->
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e9ebef">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#010309">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f2ea">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#171816">
 
   <link rel="icon" href="images/favicon/favicon-light.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
   <link rel="icon" href="images/favicon/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
@@ -55,169 +55,58 @@
       font-display: swap;
     }
 
-    /*
-     * Theming: a single set of variables resolved with light-dark(light, dark).
-     * The active value follows the `color-scheme` property — `light dark` tracks
-     * the OS preference, and the toggle overrides it to an explicit `light`/`dark`.
-     */
     :root {
       color-scheme: light dark;
-
-      /* Page gutter — shared by the body and the footer so they stay in sync. */
-      --pad: 1.5rem;
-
-      --bg-from:   light-dark(oklch(94% 0.005 260), oklch(10% 0.02 260));
-      --bg-to:     light-dark(oklch(86% 0.012 260), oklch(16% 0.04 260));
-      --text:      light-dark(oklch(18% 0.01 260),  oklch(95% 0.01 260));
-      /* The .orbs layer is position:fixed, so scrolling slides every text block across
-         the whole orb field — its luminance extremes are reachable, not hypothetical.
-         --muted is therefore tuned against the worst point of that field, not the bare
-         gradient: light against the field's darkest patch, dark against its lightest. */
-      --muted:     light-dark(oklch(38% 0.01 260),  oklch(81% 0.01 260));
-      --btn-bg:    light-dark(oklch(0% 0 0 / 0.07), oklch(100% 0 0 / 0.10));
-      --btn-hover: light-dark(oklch(0% 0 0 / 0.13), oklch(100% 0 0 / 0.18));
-      /* The orb alpha lives in the colour, not in .orb { opacity }, so it can differ per
-         scheme: light-dark() is defined for <color> only — fed to a bare number it is
-         invalid, and the declaration falls back to opacity:1. Light theme reads as cold
-         paper with a faint aurora rather than an inverted dark theme, so its pastels are
-         dialled back; dark keeps the full bloom. */
-      --orb-1:     light-dark(oklch(75% 0.12 305 / 0.42), oklch(42% 0.22 290 / 0.55));
-      --orb-2:     light-dark(oklch(78% 0.12 220 / 0.42), oklch(52% 0.18 195 / 0.55));
-      --orb-3:     light-dark(oklch(76% 0.12 290 / 0.42), oklch(38% 0.20 250 / 0.55));
-
-      /* Single accent: links, primary button, section underline, "What I do" icons.
-         Darker in light theme so it clears WCAG AA — incl. as text on the .btn-primary
-         12%-accent tinted background, not just the bare gradient. */
-      --accent:    light-dark(oklch(38% 0.18 290),  oklch(81% 0.12 290));
+      --bg: light-dark(oklch(96.1266% 0.011090 89.723), oklch(20.7128% 0.004175 128.687));
+      --text: light-dark(oklch(26.6096% 0.007407 118.319), oklch(95.1238% 0.008049 98.881));
+      --muted: light-dark(oklch(49.7417% 0.015961 120.581), oklch(77.8408% 0.012725 116.876));
+      --accent: light-dark(oklch(49.4736% 0.089083 73.380), oklch(77.5985% 0.093251 78.081));
+      --rule: light-dark(oklch(87.4091% 0.013581 102.043), oklch(35.4429% 0.014097 123.890));
+      --photo-mat: light-dark(oklch(98% 0.012 85), oklch(28% 0.015 85));
+      --photo-edge: light-dark(oklch(84% 0.024 85), oklch(43% 0.025 85));
+      --photo-shadow: light-dark(oklch(20% 0.01 85 / 0.12), oklch(0% 0 0 / 0.28));
+      --pad: clamp(1.5rem, 5vw, 4rem);
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      /* min-height (not height:100%) so the box grows with content — the gradient then
-         covers the full page height and never clips on scroll. */
       min-height: 100vh;
-      padding: var(--pad);
+      padding: 1.5rem var(--pad) 1.75rem;
       font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      /* Normalize the fallback's x-height to Satoshi's while it swaps in, so the
-         font-display: swap exchange doesn't reflow text (CLS) — esp. the LCP .name. */
       font-size-adjust: from-font;
-      /* Interpolate in oklab: both stops are oklch, and the sRGB default ramps through a
-         muddier midpoint between them. */
-      background: linear-gradient(in oklab 135deg, var(--bg-from), var(--bg-to));
+      font-size: 1.125rem;
+      line-height: 1.6;
+      background: var(--bg);
       color: var(--text);
-      transition: color 0.3s;
     }
 
-    /* ── Aurora orbs ──────────────────────────────────── */
+    header, main, footer { width: 100%; max-width: 63rem; margin-inline: auto; }
 
-    .orbs {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      overflow: hidden;
-      pointer-events: none;
-      user-select: none;
+    header { display: flex; justify-content: flex-end; margin-bottom: 2.75rem; }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.3em;
     }
 
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      transition: background-color 0.5s;
-    }
+    a:hover { color: var(--text); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
 
-    .orb-1 {
-      width: 50vmax;
-      height: 50vmax;
-      top: -15%;
-      left: -10%;
-      background-color: var(--orb-1);
-      animation: drift-1 22s ease-in-out infinite;
-    }
-
-    .orb-2 {
-      width: 40vmax;
-      height: 40vmax;
-      bottom: -10%;
-      right: -10%;
-      background-color: var(--orb-2);
-      animation: drift-2 28s ease-in-out infinite;
-    }
-
-    .orb-3 {
-      width: 35vmax;
-      height: 35vmax;
-      top: 20%;
-      left: 40%;
-      background-color: var(--orb-3);
-      animation: drift-3 18s ease-in-out infinite;
-    }
-
-    @keyframes drift-1 {
-      0%, 100% { transform: translate(0,    0  ); }
-      33%       { transform: translate(6%,  10%); }
-      66%       { transform: translate(-4%, 6% ); }
-    }
-
-    @keyframes drift-2 {
-      0%, 100% { transform: translate(0,    0   ); }
-      33%       { transform: translate(-8%, -6% ); }
-      66%       { transform: translate(5%,  -10%); }
-    }
-
-    @keyframes drift-3 {
-      0%, 100% { transform: translate(0,   0  ); }
-      33%       { transform: translate(8%, 6% ); }
-      66%       { transform: translate(-5%, 10%); }
-    }
-
-    /* ── Entrance animation ───────────────────────────── */
-
-    @keyframes enter {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0);    }
-    }
-
-    header {
-      animation: enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    main {
-      animation: enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
-    }
-
-    footer {
-      animation: enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
-    }
-
-    /* ── Header ───────────────────────────────────────── */
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-
-    /* ── Theme toggle ─────────────────────────────────── */
-
-    /* The toggle is a .btn.btn-secondary; only the round shape and icon are bespoke
-       (border / fill / hover / focus ring all come from the shared button styles). */
     #theme-toggle {
       position: relative;
-      width: 2.5rem;
-      height: 2.5rem;
-      padding: 0;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid var(--rule);
       border-radius: 50%;
-      justify-content: center;
+      background: transparent;
+      color: var(--muted);
       cursor: pointer;
     }
+
+    #theme-toggle:hover { color: var(--text); border-color: var(--accent); }
+    #theme-toggle:focus-visible { outline-offset: 2px; }
 
     /*
      * Both icons are always present; light-dark() reveals exactly one based on
@@ -250,204 +139,127 @@
       mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
     }
 
-    /* ── Main content ─────────────────────────────────── */
-
-    /* The whole block is centered on the page (max-width + auto margins);
-       text inside stays left-aligned for readability, the footer centers. */
-    main {
-      max-width: 52rem;
-      width: 100%;
-      margin-inline: auto;
-      align-self: center;
-    }
-
-    /* Hero ── photo left, identity right */
+    /* A restrained rule balances the informal, printed-photo treatment. */
     .hero {
-      display: flex;
-      gap: 2.75rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 13rem;
       align-items: center;
+      gap: 4rem;
     }
 
-    /* The <picture> carries the frame (it used to be display:contents, with the <img> as
-       the flex child). It needs to be a real box so the photo can be zoomed inside it:
-       the source is a street snapshot, and cropping in past the brick/gate/car leaves the
-       face rather than the surroundings. Done here rather than by re-encoding, because the
-       <picture> serves avif/webp/jpeg and only two of those can be regenerated on this
-       machine — a re-crop would ship three formats showing different crops. */
-    .hero picture {
-      display: block;
-      flex: none;
-      width: 14rem;
-      height: 14rem;
-      border-radius: 50%;
-      overflow: hidden;
-      /* .photo inside is transform: scale()d; WebKit can fail to clip a transformed
-         descendant to a border-radius + overflow:hidden box, letting the image's square
-         corners bleed past the circle. A stacking context forces the clip. */
-      isolation: isolate;
-      border: 1px solid light-dark(oklch(0% 0 0 / 0.12), oklch(100% 0 0 / 0.18));
-      box-shadow: 0 0 0 10px light-dark(oklch(0% 0 0 / 0.04), oklch(100% 0 0 / 0.04)),
-                  0 24px 60px light-dark(oklch(0% 0 0 / 0.18), oklch(0% 0 0 / 0.45));
-    }
-
-    .photo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scale(1.18);
-      transform-origin: 52% 40%;
-    }
-
-    .eyebrow {
-      font-weight: 500;
-      font-size: 0.875rem;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
+    .hero-text { grid-column: 1; grid-row: 1; position: relative; padding-left: 1.75rem; border-left: 1px solid var(--rule); }
+    .hero-text::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -1px;
+      width: 2px;
+      height: 3rem;
+      background: var(--accent);
     }
 
     .name {
-      /* ss01 swaps Satoshi's spur'd G for the clean alternate; the name has no 'a' to affect. */
       font-feature-settings: "ss01" 1;
+      font-size: clamp(3rem, 6vw, 4.75rem);
       font-weight: 700;
-      font-size: clamp(2.5rem, 1.6rem + 4vw, 3.4rem);
-      letter-spacing: -0.015em;
-      line-height: 1.02;
+      letter-spacing: -0.055em;
+      line-height: 1.08;
       margin-bottom: 1rem;
-      text-wrap: balance;
     }
 
-    .intro {
-      font-size: 1.0625rem;
-      line-height: 1.65;
-      color: var(--text);
-      opacity: 0.92;
-      max-width: 46ch;
-      margin-bottom: 1.5rem;
-      /* pretty avoids orphaned last words in body copy (balance is for the heading). */
-      text-wrap: pretty;
+    .eyebrow { font-size: 1rem; font-weight: 500; margin-bottom: 1.3rem; }
+    .intro { max-width: 47ch; color: var(--muted); text-wrap: pretty; }
+    .actions { display: flex; flex-wrap: wrap; gap: 1.75rem; margin-top: 1.5rem; }
+    .actions a { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; font-size: 1rem; font-weight: 500; text-decoration: none; }
+    /* One continuous underline spans the label, gap, and animated arrow. */
+    .actions a::after { content: ''; position: absolute; inset-inline: 0; bottom: 0.55rem; border-bottom: 1px solid currentColor; }
+    .actions span { font-size: 0.9rem; }
+    .hero picture {
+      display: block;
+      grid-column: 2;
+      grid-row: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--photo-edge);
+      border-radius: 0.8rem;
+      background: var(--photo-mat);
+      box-shadow: 0 12px 28px -8px var(--photo-shadow);
+      transform: rotate(-2deg);
+    }
+    .photo { display: block; width: 100%; height: 15rem; object-fit: cover; border-radius: 0.35rem; filter: saturate(0.78) contrast(0.98); }
+
+    .do { margin-top: 4rem; }
+    .section-h { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .do-grid { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; margin-top: 1.25rem; }
+    .do-item { border-top: 1px solid var(--rule); padding-top: 1.25rem; }
+    .do-item h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .do-item p { font-size: 1.0625rem; color: var(--muted); text-wrap: pretty; }
+
+    .exploring { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 2rem; margin-top: 2.75rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+    .exploring .section-h { padding-left: 0.8rem; border-left: 2px solid var(--accent); align-self: start; margin-top: 0.2rem; }
+    .exploring h3 { font-size: 1.0625rem; font-weight: 500; margin-bottom: 0.35rem; }
+    .exploring p { font-size: 1rem; color: var(--muted); max-width: 70ch; text-wrap: pretty; }
+
+    footer { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: 0.75rem; color: var(--muted); }
+
+    @media (max-width: 56rem) {
+      .hero { grid-template-columns: minmax(0, 1fr) 11rem; gap: 2rem; }
+      .photo { height: 13rem; }
+      .do-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+      .do-item { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 2rem; }
+      .do-item h3 { margin-bottom: 0; }
     }
 
-    .actions {
-      display: flex;
-      gap: 0.875rem;
-      flex-wrap: wrap;
+    @media (max-width: 36rem) {
+      body { padding-top: 1rem; }
+      header { margin-bottom: 1.75rem; }
+      main { container: profile / inline-size; }
+      .hero { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .hero-text { display: contents; }
+      .hero-text::before { content: none; }
+      .name { font-size: clamp(2.5rem, 11vw, 3.5rem); margin-bottom: 0; text-align: center; overflow-wrap: anywhere; }
+      .hero picture { grid-column: 1; grid-row: 1; justify-self: center; width: min(8rem, 100%); margin-bottom: 1.75rem; padding: 0.25rem; border-radius: 0.55rem; }
+      .photo { height: auto; aspect-ratio: 7 / 8; border-radius: 0.25rem; }
+      .eyebrow { grid-column: 1 / -1; margin: 1.5rem 0 1.25rem; font-size: 0.9375rem; }
+      .intro { grid-column: 1 / -1; padding-left: 1rem; border-left: 1px solid var(--rule); position: relative; }
+      .intro::before { content: ''; position: absolute; top: 0; left: -1px; width: 2px; height: 2rem; background: var(--accent); }
+      .actions { grid-column: 1 / -1; margin-top: 1rem; }
+      .do { margin-top: 2.75rem; }
+      .do-item { display: block; }
+      .do-item h3 { margin-bottom: 0.65rem; }
+      .exploring { grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
+      footer { margin-top: 2.5rem; }
+
+      /* Keep the compact composition when space permits. Unlike a viewport
+         breakpoint, this rem threshold also responds to the user's font size. */
+      @container profile (min-width: 17rem) {
+        .hero { grid-template-columns: minmax(0, 1fr) 6rem; column-gap: 1rem; }
+        .name { grid-column: 1; grid-row: 1; text-align: start; }
+        .hero picture { grid-column: 2; width: 100%; margin-bottom: 0; }
+        .photo { height: 7rem; aspect-ratio: auto; }
+      }
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      padding: 0.7rem 1.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-decoration: none;
-      transition: background 0.2s, border-color 0.2s;
+    /* Match the published site's entrance; reduced-motion users see static content. */
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes enter {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      header, main, footer { animation: enter 700ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+      main { animation-delay: 150ms; }
+      footer { animation-delay: 300ms; }
+      .actions span { transition: transform 180ms ease-out; }
+      .actions a:hover span, .actions a:focus-visible span { transform: translate(2px, -2px); }
+      a, #theme-toggle { transition: color 180ms ease-out, border-color 180ms ease-out; }
     }
-
-    .btn-primary {
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      background: color-mix(in oklab, var(--accent) 12%, transparent);
-    }
-
-    .btn-primary:hover { background: color-mix(in oklab, var(--accent) 22%, transparent); }
-
-    .btn-secondary {
-      border: 1px solid var(--btn-bg);
-      color: var(--text);
-      background: var(--btn-bg);
-    }
-
-    .btn-secondary:hover { background: var(--btn-hover); }
-
-    .btn:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    /* What I do ── titled blocks instead of a wall of prose */
-    .do { margin-top: 3.25rem; }
-
-    .section-h { font-weight: 700; font-size: 1.625rem; letter-spacing: -0.01em; }
-
-    .section-u {
-      width: 3rem;
-      height: 3px;
-      border-radius: 2px;
-      background: var(--accent);
-      margin: 0.4rem 0 1.75rem;
-    }
-
-    .do-grid {
-      list-style: none;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.9rem 2.75rem;
-    }
-
-    .do-item { display: flex; gap: 1rem; }
-
-    .do-ic {
-      flex: none;
-      width: 1.9rem;
-      height: 1.9rem;
-      color: var(--accent);
-    }
-
-    .do-ic svg { width: 100%; height: 100%; display: block; }
-
-    .do-item h3 { font-weight: 700; font-size: 1.0625rem; margin-bottom: 0.4rem; }
-
-    /* De-emphasised via --muted rather than opacity: opacity composited this text with
-       whatever the orb field put behind it, which is what dropped it below AA in the
-       light theme (3.6:1). --muted is tuned against that field, so it holds. */
-    .do-item p {
-      font-size: 0.9375rem;
-      line-height: 1.7;
-      color: var(--muted);
-      text-wrap: pretty;
-    }
-
-    /* ── Footer ───────────────────────────────────────── */
-
-    footer {
-      font-size: 0.8125rem;
-      color: var(--muted);
-      text-align: center;
-      /* A hairline rather than whitespace alone: with the tech-chip row gone the footer
-         sits directly under the "What I do" grid, and the rule gives it an edge to
-         belong to instead of floating. Only top padding — the body's own bottom padding
-         handles the gap to the viewport edge, so don't double it here. */
-      width: 100%;
-      max-width: 52rem;
-      margin: 3.25rem auto 0;
-      border-top: 1px solid light-dark(oklch(0% 0 0 / 0.10), oklch(100% 0 0 / 0.12));
-      padding-top: 1.75rem;
-    }
-
-    /* ── Responsive ───────────────────────────────────── */
-
-    @media (max-width: 40rem) {
-      .hero { flex-direction: column; align-items: center; text-align: center; gap: 1.75rem; }
-      .hero picture { width: 11rem; height: 11rem; }
-      .intro { max-width: none; }
-      .actions { justify-content: center; }
-      .do-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ── Reduced motion ───────────────────────────────── */
-
-    @media (prefers-reduced-motion: reduce) {
-      .orb { animation: none; }
-      header, main, footer { animation: none; }
-    }
-
-    /* ── Forced colors (Windows High Contrast) ────────── */
 
     @media (forced-colors: active) {
-      #theme-toggle { border: 1px solid ButtonText; }
+      .hero picture { border-color: CanvasText; box-shadow: none; }
+      .photo { filter: none; }
+      #theme-toggle { border-color: ButtonText; }
       #theme-toggle::before { background-color: light-dark(transparent, ButtonText); }
-      #theme-toggle::after  { background-color: light-dark(ButtonText, transparent); }
+      #theme-toggle::after { background-color: light-dark(ButtonText, transparent); }
     }
   </style>
 
@@ -469,58 +281,53 @@
 
 <body>
 
-  <div class="orbs" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
-
   <header>
-    <button id="theme-toggle" class="btn btn-secondary" aria-label="Toggle theme" title="Toggle theme"></button>
+    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme"></button>
   </header>
 
   <main>
-    <section class="hero">
-      <!-- LCP element: modern formats first (AVIF ~27K, WebP ~29K), JPEG fallback ~75K.
-           fetchpriority="high" + decoding="sync" so the browser prioritizes and doesn't defer its decode. -->
+    <section class="hero" aria-labelledby="name">
       <picture>
         <source srcset="images/photo.avif" type="image/avif">
         <source srcset="images/photo.webp" type="image/webp">
         <img class="photo" src="images/photo.jpg" width="448" height="448" alt="Gleb Gorelov" fetchpriority="high" decoding="sync">
       </picture>
       <div class="hero-text">
-        <p class="eyebrow">Tech &amp; team lead · UI · Jmix Framework</p>
-        <h1 class="name">Gleb Gorelov</h1>
-        <p class="intro">Since 2014 I've worked on the UI of Jmix — the open-source framework teams around the world use to build their applications. These days I lead the UI team about as much as I build it.</p>
+        <h1 id="name" class="name">Gleb Gorelov</h1>
+        <p class="eyebrow">UI engineer · Tech &amp; team lead · Jmix</p>
+        <p class="intro">Since 2014 I've worked on the UI of Jmix and its predecessor, CUBA Platform — open-source frameworks teams around the world use to build their applications. These days I lead the UI team about as much as I build it.</p>
         <div class="actions">
-          <a class="btn btn-primary" href="https://github.com/glebfox" target="_blank" rel="noopener">GitHub</a>
-          <a class="btn btn-secondary" href="mailto:glebfox@gmail.com">Email</a>
+          <a href="https://github.com/glebfox" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="mailto:glebfox@gmail.com">Email <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
 
     <section class="do" aria-labelledby="do-h">
       <h2 id="do-h" class="section-h">What I do</h2>
-      <div class="section-u" aria-hidden="true"></div>
       <ul class="do-grid" role="list">
         <li class="do-item">
-          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
-          <div><h3>Building the UI</h3><p>The UI layer of Jmix — and CUBA Platform before it: components and behavior on Vaadin and Web Components, over Java and Spring Boot.</p></div>
+          <h3>Building the UI</h3>
+          <p>The UI layer of Jmix — and CUBA Platform before it: components and behavior on Vaadin and Web Components, over Java and Spring Boot.</p>
         </li>
         <li class="do-item">
-          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3"/><path d="M3 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9.5" r="2.3"/><path d="M15.5 20a4.6 4.6 0 0 1 6-4.3"/></svg></span>
-          <div><h3>Leading the team</h3><p>As tech &amp; team lead I'm in other people's code as much as my own — reviewing, mentoring, leaving a quiet fingerprint on what the team ships.</p></div>
+          <h3>Leading the team</h3>
+          <p>As tech &amp; team lead I'm in other people's code as much as my own — reviewing, mentoring, leaving a quiet fingerprint on what the team ships.</p>
         </li>
         <li class="do-item">
-          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 2.5 9 12 14l9.5-5L12 4z"/><path d="M6.5 11.2V16c0 1.4 2.6 2.8 5.5 2.8s5.5-1.4 5.5-2.8v-4.8"/></svg></span>
-          <div><h3>Teaching the craft</h3><p>Training materials, trainings, and online workshops for developers picking Jmix up. I like passing it on.</p></div>
-        </li>
-        <li class="do-item">
-          <span class="do-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="M7 9.5 10 12l-3 2.5"/><path d="M12.5 15H17"/></svg></span>
-          <div><h3>Agentic coding</h3><p>Lately the engineering of it — not vibe-coding, but a proper harness of process and guardrails. Partly to see how much I can hand off before it quietly applies for my job.</p></div>
+          <h3>Teaching the craft</h3>
+          <p>Training materials, trainings, and online workshops for developers picking Jmix up. I like passing it on.</p>
         </li>
       </ul>
     </section>
+
+    <aside class="exploring" aria-labelledby="exploring-h">
+      <h2 id="exploring-h" class="section-h">Currently exploring</h2>
+      <div>
+        <h3>Agentic coding</h3>
+        <p>Lately the engineering of it — not vibe-coding, but a proper harness of process and guardrails. Partly to see how much I can hand off before it quietly applies for my job.</p>
+      </div>
+    </aside>
   </main>
 
   <footer>
