@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
+  <meta name="author" content="Gleb Gorelov">
+
+  <!-- Canonical URL: the page is reachable at both the apex domain and the github.io host; point crawlers at one. -->
+  <link rel="canonical" href="https://glebfox.com/">
+
+  <!--
+    Social link previews. og:image / twitter:image must be ABSOLUTE URLs — scrapers
+    (Slack, Telegram, Facebook, X) fetch them server-side, so a relative path won't resolve.
+    The card is a single static PNG (images/og-image.png), intentionally dark and non-adaptive:
+    a scraper has no color-scheme to honor, so it can't mirror the page's light/dark toggle.
+  -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="glebfox.com">
+  <meta property="og:url" content="https://glebfox.com/">
+  <meta property="og:title" content="Gleb Gorelov">
+  <meta property="og:description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://glebfox.com/images/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gleb Gorelov — glebfox.com">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gleb Gorelov">
+  <meta name="twitter:description" content="Gleb Gorelov — tech &amp; team lead for the UI of Jmix Framework.">
+  <meta name="twitter:image" content="https://glebfox.com/images/og-image.png">
+  <meta name="twitter:image:alt" content="Gleb Gorelov — glebfox.com">
+
+  <!-- Declare supported color schemes early so the browser themes the canvas before CSS parses. -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f2ea">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#171816">
+
+  <link rel="icon" href="images/favicon/favicon-light.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="images/favicon/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+
+  <!-- Preload Manrope (the page's only web font; used by the name/LCP heading and all body text). Fonts fetch in CORS mode. -->
+  <link rel="preload" href="fonts/Manrope-Variable.woff2" as="font" type="font/woff2" crossorigin>
+
+  <title>Gleb Gorelov</title>
+
+  <style>
+    @font-face {
+      font-family: 'Manrope';
+      src: url('fonts/Manrope-Variable.woff2') format('woff2');
+      font-weight: 200 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(oklch(96.1266% 0.011090 89.723), oklch(20.7128% 0.004175 128.687));
+      --text: light-dark(oklch(26.6096% 0.007407 118.319), oklch(95.1238% 0.008049 98.881));
+      --muted: light-dark(oklch(49.7417% 0.015961 120.581), oklch(77.8408% 0.012725 116.876));
+      --accent: light-dark(oklch(49.4736% 0.089083 73.380), oklch(77.5985% 0.093251 78.081));
+      --rule: light-dark(oklch(87.4091% 0.013581 102.043), oklch(35.4429% 0.014097 123.890));
+      --photo-mat: light-dark(oklch(98% 0.012 85), oklch(28% 0.015 85));
+      --photo-edge: light-dark(oklch(84% 0.024 85), oklch(43% 0.025 85));
+      --photo-shadow: light-dark(oklch(20% 0.01 85 / 0.12), oklch(0% 0 0 / 0.28));
+      --pad: clamp(1.5rem, 5vw, 4rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      padding: 1.5rem var(--pad) 1.75rem;
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size-adjust: from-font;
+      font-size: 1.125rem;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header, main, footer { width: 100%; max-width: 63rem; margin-inline: auto; }
+
+    header { display: flex; justify-content: flex-end; margin-bottom: 2.75rem; }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.3em;
+    }
+
+    a:hover { color: var(--text); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+
+    #theme-toggle {
+      position: relative;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      cursor: default;
+    }
+
+    #theme-toggle:enabled { cursor: pointer; }
+    #theme-toggle:enabled:hover { color: var(--text); border-color: var(--accent); }
+    #theme-toggle:disabled { opacity: 0.5; }
+    #theme-toggle:focus-visible { outline-offset: 2px; }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /*
+     * Both icons are always present; light-dark() reveals exactly one based on
+     * the active color-scheme (sun in dark, moon in light). This keeps the icon
+     * driven solely by color-scheme — mask-image itself can't use light-dark().
+     */
+    #theme-toggle::before,
+    #theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1.1rem;
+      height: 1.1rem;
+      transform: translate(-50%, -50%);
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: contain;
+    }
+
+    /* sun icon (lucide) → shown in dark scheme */
+    #theme-toggle::before {
+      background-color: light-dark(transparent, currentColor);
+      mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2'/%3E%3Cpath d='M12 20v2'/%3E%3Cpath d='m4.93 4.93 1.41 1.41'/%3E%3Cpath d='m17.66 17.66 1.41 1.41'/%3E%3Cpath d='M2 12h2'/%3E%3Cpath d='M20 12h2'/%3E%3Cpath d='m6.34 17.66-1.41 1.41'/%3E%3Cpath d='m19.07 4.93-1.41 1.41'/%3E%3C/svg%3E");
+    }
+
+    /* moon icon (lucide) → shown in light scheme */
+    #theme-toggle::after {
+      background-color: light-dark(currentColor, transparent);
+      mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+    }
+
+    /* A restrained rule balances the informal, printed-photo treatment. */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 13rem;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .hero-text { grid-column: 1; grid-row: 1; position: relative; padding-left: 1.75rem; border-left: 1px solid var(--rule); }
+    .hero-text::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -1px;
+      width: 2px;
+      height: 3rem;
+      background: var(--accent);
+    }
+
+    .name {
+      font-size: clamp(3rem, 6vw, 4.75rem);
+      font-weight: 700;
+      letter-spacing: -0.055em;
+      /* Manrope's narrow word space would close up under the tight tracking. */
+      word-spacing: 0.07em;
+      line-height: 1.08;
+      margin-bottom: 1rem;
+    }
+
+    .eyebrow { font-size: 1rem; font-weight: 500; margin-bottom: 1.3rem; }
+    .intro { max-width: 47ch; color: var(--muted); text-wrap: pretty; }
+    .actions { display: flex; flex-wrap: wrap; gap: 1.75rem; margin-top: 1.5rem; }
+    .actions a { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; font-size: 1rem; font-weight: 500; text-decoration: none; }
+    /* One continuous underline spans the label, gap, and animated arrow. */
+    .actions a::after { content: ''; position: absolute; inset-inline: 0; bottom: 0.55rem; border-bottom: 1px solid currentColor; }
+    .actions span { font-size: 0.9rem; }
+    .hero picture {
+      display: block;
+      grid-column: 2;
+      grid-row: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--photo-edge);
+      border-radius: 0.8rem;
+      background: var(--photo-mat);
+      box-shadow: 0 12px 28px -8px var(--photo-shadow);
+      transform: rotate(-2deg);
+    }
+    .photo { display: block; width: 100%; height: 15rem; object-fit: cover; border-radius: 0.35rem; filter: saturate(0.78) contrast(0.98); }
+
+    .do { margin-top: 4rem; }
+    .section-h { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .do-grid { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; margin-top: 1.25rem; }
+    .do-item { border-top: 1px solid var(--rule); padding-top: 1.25rem; }
+    .do-item h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .do-item p { font-size: 1.0625rem; color: var(--muted); text-wrap: pretty; }
+
+    .exploring { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 2rem; margin-top: 2.75rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+    .exploring .section-h { padding-left: 0.8rem; border-left: 2px solid var(--accent); align-self: start; margin-top: 0.2rem; }
+    .exploring h3 { font-size: 1.0625rem; font-weight: 500; margin-bottom: 0.35rem; }
+    .exploring p { font-size: 1rem; color: var(--muted); max-width: 70ch; text-wrap: pretty; }
+
+    footer { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: 0.75rem; color: var(--muted); }
+
+    @media (max-width: 56rem) {
+      .hero { grid-template-columns: minmax(0, 1fr) 11rem; gap: 2rem; }
+      .photo { height: 13rem; }
+      .do-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+      .do-item { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 2rem; }
+      .do-item h3 { margin-bottom: 0; }
+    }
+
+    @media (max-width: 36rem) {
+      body { padding-top: 1rem; }
+      header { margin-bottom: 1.75rem; }
+      main { container: profile / inline-size; }
+      .hero { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .hero-text { display: contents; }
+      .hero-text::before { content: none; }
+      .name { font-size: clamp(2.5rem, 11vw, 3.5rem); margin-bottom: 0; text-align: center; overflow-wrap: anywhere; }
+      .hero picture { grid-column: 1; grid-row: 1; justify-self: center; width: min(8rem, 100%); margin-bottom: 1.75rem; padding: 0.25rem; border-radius: 0.55rem; }
+      .photo { height: auto; aspect-ratio: 7 / 8; border-radius: 0.25rem; }
+      .eyebrow { grid-column: 1 / -1; margin: 1.5rem 0 1.25rem; font-size: 0.9375rem; }
+      .intro { grid-column: 1 / -1; padding-left: 1rem; border-left: 1px solid var(--rule); position: relative; }
+      .intro::before { content: ''; position: absolute; top: 0; left: -1px; width: 2px; height: 2rem; background: var(--accent); }
+      .actions { grid-column: 1 / -1; margin-top: 1rem; }
+      .do { margin-top: 2.75rem; }
+      .do-item { display: block; }
+      .do-item h3 { margin-bottom: 0.65rem; }
+      .exploring { grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
+      footer { margin-top: 2.5rem; }
+
+      /* Keep the compact composition when space permits. Unlike a viewport
+         breakpoint, this rem threshold also responds to the user's font size. */
+      @container profile (min-width: 17rem) {
+        .hero { grid-template-columns: minmax(0, 1fr) 6rem; column-gap: 1rem; }
+        .name { grid-column: 1; grid-row: 1; text-align: start; }
+        .hero picture { grid-column: 2; width: 100%; margin-bottom: 0; }
+        .photo { height: 7rem; aspect-ratio: auto; }
+      }
+    }
+
+    /* Match the published site's entrance; reduced-motion users see static content. */
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes enter {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      header, main, footer { animation: enter 700ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+      main { animation-delay: 150ms; }
+      footer { animation-delay: 300ms; }
+      .actions span { transition: transform 180ms ease-out; }
+      .actions a:hover span, .actions a:focus-visible span { transform: translate(2px, -2px); }
+      a, #theme-toggle { transition: color 180ms ease-out, border-color 180ms ease-out; }
+    }
+
+    @media (forced-colors: active) {
+      .hero picture { border-color: CanvasText; box-shadow: none; }
+      .photo { filter: none; }
+      #theme-toggle { color: ButtonText; border-color: ButtonText; }
+      #theme-toggle:disabled { color: GrayText; border-color: GrayText; opacity: 1; }
+      #theme-toggle::before { background-color: light-dark(transparent, ButtonText); }
+      #theme-toggle::after { background-color: light-dark(ButtonText, transparent); }
+      #theme-toggle:disabled::before { background-color: light-dark(transparent, GrayText); }
+      #theme-toggle:disabled::after { background-color: light-dark(GrayText, transparent); }
+    }
+  </style>
+
+  <script>
+    // Apply a saved override before first paint to avoid a flash.
+    // With no saved preference, CSS `color-scheme: light dark` follows the OS.
+    // Storage access throws outright in some privacy modes, and this runs before paint —
+    // an uncaught throw here would take the rest of the inline script with it.
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.style.colorScheme = saved;
+        }
+      } catch (e) { /* no persistence available — fall back to following the OS */ }
+    })();
+  </script>
+</head>
+
+<body>
+
+  <header>
+    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme" disabled></button>
+    <span id="theme-status" role="status" class="visually-hidden"></span>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="name">
+      <picture>
+        <source srcset="images/photo.avif" type="image/avif">
+        <source srcset="images/photo.webp" type="image/webp">
+        <img class="photo" src="images/photo.jpg" width="448" height="448" alt="Gleb Gorelov" fetchpriority="high" decoding="sync">
+      </picture>
+      <div class="hero-text">
+        <h1 id="name" class="name">Gleb Gorelov</h1>
+        <p class="eyebrow">UI engineer · Tech &amp; team lead · Jmix</p>
+        <p class="intro">Since 2014 I've worked on the UI of Jmix and its predecessor, CUBA Platform — open-source frameworks teams around the world use to build their applications. These days I lead the UI team about as much as I build it.</p>
+        <div class="actions">
+          <a href="https://github.com/glebfox" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="mailto:glebfox@gmail.com">Email <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="do" aria-labelledby="do-h">
+      <h2 id="do-h" class="section-h">What I do</h2>
+      <ul class="do-grid" role="list">
+        <li class="do-item">
+          <h3>Building the UI</h3>
+          <p>The UI layer of Jmix — and CUBA Platform before it: components and behavior on Vaadin and Web Components, over Java and Spring Boot.</p>
+        </li>
+        <li class="do-item">
+          <h3>Leading the team</h3>
+          <p>As tech &amp; team lead I'm in other people's code as much as my own — reviewing, mentoring, leaving a light fingerprint on what the team ships.</p>
+        </li>
+        <li class="do-item">
+          <h3>Teaching the craft</h3>
+          <p>Training materials, courses, and online workshops for developers picking Jmix up. I like passing it on.</p>
+        </li>
+      </ul>
+    </section>
+
+    <aside class="exploring" aria-labelledby="exploring-h">
+      <h2 id="exploring-h" class="section-h">Currently exploring</h2>
+      <div>
+        <h3>Agentic coding</h3>
+        <p>Lately the engineering of it — not vibe-coding, but a proper harness of process and guardrails. Partly to see how much I can hand off before it quietly applies for my job.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <p>&copy; 2016&ndash;<span id="year">2026</span> Gleb Gorelov</p>
+  </footer>
+
+  <script>
+    // Footer year (kept current automatically; the markup carries a sane fallback for no-JS).
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    var root = document.documentElement;
+    var themeToggle = document.getElementById('theme-toggle');
+    var themeStatus = document.getElementById('theme-status');
+    var systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    var previousTheme;
+
+    function currentTheme() {
+      var override = root.style.colorScheme;
+      return override === 'light' || override === 'dark'
+        ? override
+        : systemTheme.matches ? 'dark' : 'light';
+    }
+
+    function updateThemeLabel() {
+      var theme = currentTheme();
+      var label = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+      themeToggle.setAttribute('aria-label', label);
+      themeToggle.title = label;
+      // Announce actual changes only: stay quiet on load and while an override is pinned.
+      if (previousTheme && previousTheme !== theme) {
+        themeStatus.textContent = theme === 'dark' ? 'Dark theme' : 'Light theme';
+      }
+      previousTheme = theme;
+    }
+
+    updateThemeLabel();
+    systemTheme.addEventListener('change', updateThemeLabel);
+
+    themeToggle.addEventListener('click', function () {
+      var systemScheme = systemTheme.matches ? 'dark' : 'light';
+      // Fall back to the OS preference when no explicit override is set yet.
+      var next = currentTheme() === 'dark' ? 'light' : 'dark';
+      if (next === systemScheme) {
+        // Toggling back to the system scheme: drop the override so the page follows the OS again.
+        root.style.colorScheme = '';
+      } else {
+        root.style.colorScheme = next;
+      }
+      updateThemeLabel();
+      // The toggle itself must keep working even where storage is unavailable; only the
+      // persistence across reloads is lost.
+      try {
+        if (next === systemScheme) localStorage.removeItem('theme');
+        else localStorage.setItem('theme', next);
+      } catch (e) { /* no persistence available */ }
+    });
+    themeToggle.disabled = false;
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+/.idea/
+.claude/worktrees/*
+*.iml
+.DS_Store
+.lighthouseci/
+
+# Superpowers brainstorming/spec artifacts — local working notes, not part of the site
+/docs/superpowers/
