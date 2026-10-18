@@ -36,6 +36,7 @@ index.html              # The entire page — inline CSS and JS
 fonts/                  # Self-hosted Manrope variable font (woff2) and its license
 images/                 # Portrait formats and social-preview card
 images/favicon/         # Adaptive light/dark SVG favicons
+LICENSE-lucide.txt      # License for the Lucide theme-toggle icons
 CNAME                   # Custom domain for GitHub Pages
 ```
 
@@ -44,3 +45,5 @@ CNAME                   # Custom domain for GitHub Pages
 © 2016–2026 Gleb Gorelov. All rights reserved.
 
 The [Manrope](https://github.com/googlefonts/manrope) font in `fonts/` is © The Manrope Project Authors and licensed under the SIL Open Font License 1.1 — see [`fonts/OFL.txt`](fonts/OFL.txt).
+
+The sun and moon theme-toggle icons in `index.html` are from [Lucide](https://lucide.dev), © Lucide Icons and Contributors, licensed under the ISC License; the moon icon is derived from [Feather](https://github.com/feathericons/feather), © Cole Bemis, licensed under the MIT License — see [`LICENSE-lucide.txt`](LICENSE-lucide.txt).
